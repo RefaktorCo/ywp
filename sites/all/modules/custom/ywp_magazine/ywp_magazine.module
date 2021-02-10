@@ -1,0 +1,300 @@
+<?php
+/**
+ * @file
+ * Provides YWP Magazine content.
+ */
+
+const YWP_MAGAZINE_THEME_NAME = 'ywp_magazine_theme';
+const YWP_MAGAZINE_PATH = 'thevoice';
+const YWP_MAGAZINE_AJAX_PATH = 'ajax/thevoice';
+
+include_once __DIR__ . '/includes/ywp_magazine.comments.inc';
+//include_once __DIR__ . '/includes/ywp_magazine.fields.inc';
+include_once __DIR__ . '/includes/ywp_magazine.mail.inc';
+include_once __DIR__ . '/includes/ywp_magazine.pages.inc';
+include_once __DIR__ . '/includes/ywp_magazine.theme.inc';
+include_once __DIR__ . '/includes/ywp_magazine.tools.inc';
+
+/**
+ * Implements hook_custom_theme().
+ *
+ * Allows showing YWP Magazine using its own theme.
+ */
+function ywp_magazine_custom_theme() {
+  if (ywp_magazine_is_magazine_path()) {
+    return YWP_MAGAZINE_THEME_NAME;
+  }
+  return NULL;
+}
+
+/**
+ * Theme callback for Ajax requests.
+ *
+ * Almost full clone of ajax_base_page_theme() except for that it bypasses
+ * YWP: Magazine theme, not only site's default theme.
+ *
+ * @return string
+ *
+ * @see ajax_base_page_theme()
+ */
+function ywp_magazine_ajax_base_page_theme() {
+  if (!empty($_POST['ajax_page_state']['theme']) && !empty($_POST['ajax_page_state']['theme_token'])) {
+    $theme = $_POST['ajax_page_state']['theme'];
+    $token = $_POST['ajax_page_state']['theme_token'];
+
+    if ($theme === YWP_MAGAZINE_THEME_NAME
+      || $theme === variable_get('theme_default', 'bartik')
+      || drupal_valid_token($token, $theme))
+    {
+      return $theme;
+    }
+  }
+}
+
+
+/**
+ * Implements hook_menu().
+ */
+function ywp_magazine_menu() {
+  return array(
+    YWP_MAGAZINE_PATH => array(
+      'title callback' => 'ywp_magazine_page_home_title',
+      'page callback' => 'ywp_magazine_page_home',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ),
+    // @todo: @deprecated?
+    /*
+    YWP_MAGAZINE_PATH . '/%/%' => array(
+      'title callback' => 'ywp_magazine_page_paragraph_title',
+      'title arguments' => array(1, 2),
+      'page callback' => 'ywp_magazine_page_paragraph',
+      'page arguments' => array(1, 2),
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ),
+    */
+    YWP_MAGAZINE_AJAX_PATH . '/page/%paragraphs_item' => array(
+      'page callback' => 'ywp_magazine_ajax_page',
+      'page arguments' => array(3),
+      'delivery callback' => 'ajax_deliver',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ),
+    // @todo: @deprecated?
+    /*
+    YWP_MAGAZINE_AJAX_PATH . '/page/%paragraphs_item/%' => array(
+      'page callback' => 'ywp_magazine_ajax_page_nav',
+      'page arguments' => array(3),
+      'delivery callback' => 'ajax_deliver',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ),
+    */
+    YWP_MAGAZINE_AJAX_PATH . '/toc/%node' => array(
+      'page callback' => 'ywp_magazine_ajax_toc',
+      'page arguments' => array(3),
+      'delivery callback' => 'ajax_deliver',
+      'access arguments' => array('access content'),
+      'type' => MENU_CALLBACK,
+    ),
+    // Clone of 'system/ajax' callback that always uses YWP: Magazine theme.
+    YWP_MAGAZINE_AJAX_PATH . '/form' => array(
+      'title' => 'AHAH callback',
+      'page callback' => 'ajax_form_callback',
+      'delivery callback' => 'ajax_deliver',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+      'file path' => 'includes',
+      'file' => 'form.inc',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function ywp_magazine_menu_alter(&$items) {
+  $items['system/ajax']['theme callback'] = 'ywp_magazine_ajax_base_page_theme';
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ *
+ * @param array $entity_info
+ */
+function ywp_magazine_entity_info_alter(&$entity_info) {
+  // Add new view modes to paragraphs.
+  $view_modes = array(
+    'teaser' => t('Teaser'),
+    'toc' => t('TOC'),
+  );
+  foreach ($view_modes as $view_mode => $label) {
+    if (!isset($entity_info['paragraphs_item']['view modes'][$view_mode])) {
+      $entity_info['paragraphs_item']['view modes'][$view_mode] = array(
+        'label' => $label,
+        'custom settings' => FALSE,
+      );
+    }
+  }
+
+  // Add Magazine view modes to nodes.
+  $view_modes = array(
+    'full' => t('Full content'),
+    'teaser' => t('Teaser'),
+  );
+  foreach ($view_modes as $view_mode => $label) {
+    if (!isset($entity_info['node']['view modes']['magazine_' . $view_mode])) {
+      $entity_info['node']['view modes']['magazine_' . $view_mode] = array(
+        'label' => $label . ' (' . t('Magazine') . ')',
+        'custom settings' => FALSE,
+      );
+    }
+  }
+
+  // Add Magazine view mode to comments.
+  if (!isset($entity_info['comment']['view modes']['magazine'])) {
+    $entity_info['comment']['view modes']['magazine'] = array(
+      'label' => t('Magazine'),
+      'custom settings' => FALSE,
+    );
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for magazine_node_form form.
+ *
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ */
+function ywp_magazine_form_magazine_node_form_alter(&$form, &$form_state, $form_id) {
+  // Issue title will be set programmatically from it's date.
+  // @see ywp_magazine_node_presave()
+  $form['title']['#access'] = FALSE;
+}
+
+/**
+ * Implements hook_paragraphs_field_widget_form_alter().
+ *
+ * @param array $element
+ * @param array $form_state
+ * @param array $context
+ *
+ * @see paragraphs_field_multiple_value_form()
+ */
+function ywp_magazine_paragraphs_field_widget_form_alter(&$element, &$form_state, &$context) {
+  $input = $form_state['input'];
+
+  if ($element['#bundle'] == 'magazine_page_media_blog' && $element['#field_name'] == 'field_magazine_page_media') {
+    $page_parents = array_slice($element['#parents'], 0 ,3);
+    $blog_parents = array(
+      'field_blog_entry',
+      LANGUAGE_NONE,
+      0,
+      'target_id'
+    );
+    $page_blog_parents = array_merge($page_parents, $blog_parents);
+
+    if ($blog_key = drupal_array_get_nested_value($input, $page_blog_parents)) {
+      $blog_parents[] = '#default_value';
+      drupal_array_set_nested_value($element, $blog_parents, $blog_key);
+    }
+  }
+  elseif ($element['#bundle'] == 'magazine_page_media_blog' && $element['#field_name'] == 'field_magazine_page_inline_media') {
+    // Do not allow media background for inline media.
+    $element['field_media_image']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ *
+ * @param object $node
+ */
+function ywp_magazine_node_presave($node) {
+  if ($node->type == 'magazine') {
+    if (!empty($node->field_month[LANGUAGE_NONE])) {
+      $date = $node->field_month[LANGUAGE_NONE][0]['value'];
+      $timestamp = strtotime($date);
+      $month = date('Y-m', $timestamp);
+
+      if (empty($node->title)) {
+        $node->title = 'Issue ' . $month;
+      }
+
+      if (empty($node->path['alias'])) {
+        $node->path['alias'] = YWP_MAGAZINE_PATH . '/' . $month;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function ywp_magazine_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'paragraphs_item') {
+    /** @var \ParagraphsItemEntity $entity */
+    if ($entity->bundle() == 'magazine_page') {
+      $blog = ywp_magazine_get_paragraph_blog($entity);
+      $blog_type = $blog->type;
+
+      if ($view_mode == 'full') {
+        if ($blog) {
+
+          // Comments list.
+          if ($comments_view = ywp_magazine_view_comments($blog)) {
+            /** @noinspection PhpUndefinedFieldInspection */
+            $entity->content['ywp_comments'] = $comments_view;
+          }
+
+          // Comment form.
+          $comment = (object) array(
+            'nid' => $blog->nid,
+            'ywp_magazine' => TRUE,
+          );
+          $form = drupal_get_form('ywp_magazine_comment_form', $comment);
+
+          // These pre-render callbacks are not used in Magazine commenting
+          // form, but slows it down significantly.
+          $pre_render = array();
+          foreach ($form['comment_body']['und'][0]['#pre_render'] as $func) {
+            if ($func != 'media_wysiwyg_pre_render_text_format' && $func != 'wysiwyg_pre_render_text_format') {
+              $pre_render[] = $func;
+            }
+          }
+          $form['comment_body']['und'][0]['#pre_render'] = $pre_render;
+
+          /** @noinspection PhpUndefinedFieldInspection */
+          $entity->content['ywp_comment_form'] = $form;
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ywp_magazine_form_alter(&$form, &$form_state, $form_id) {
+  // Blog commenting form.
+  if ($form_id == 'comment_node_blog_form') {
+    $comment = $form_state['comment'];
+
+    if (!empty($comment->ywp_magazine)) {
+//      object_log('form', $form);
+    }
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function ywp_magazine_init() {
+  if ($node = menu_get_object()) {
+    if ($node->type == 'magazine') {
+//      drupal_goto(YWP_MAGAZINE_ROOT_PATH);
+    }
+  }
+}

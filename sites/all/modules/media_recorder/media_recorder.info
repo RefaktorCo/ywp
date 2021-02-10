@@ -1,0 +1,18 @@
+name = Media Recorder
+description = "Adds a javascript based video/audio recorder."
+package = "Media"
+core = 7.x
+
+dependencies[] = file_entity (>=2.x)
+dependencies[] = media (>=2.x)
+dependencies[] = libraries (>=2.x)
+
+files[] = includes/MediaRecorderBrowser.inc
+
+configure = admin/config/media/mediarecorder
+
+; Information added by Drupal.org packaging script on 2018-10-31
+version = "7.x-1.0-alpha12"
+core = "7.x"
+project = "media_recorder"
+datestamp = "1541020993"

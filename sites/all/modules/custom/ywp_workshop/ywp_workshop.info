@@ -1,0 +1,6 @@
+name = YWP Workshop
+description = Custom functionality for YWP Workshop nodes.
+core = 7.x
+package = YWP
+
+files[] = ywp_workshop.module

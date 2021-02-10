@@ -1,0 +1,183 @@
+<?php
+
+/**
+ * @file
+ * Image field checkbox_value defines a new database schema
+ * for adding a checkbox_value to images.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function image_field_checkbox_schema() {
+  $schema['field_image_field_checkbox'] = array(
+    'description' => 'The base table for the image_field_checkbox module.',
+    'fields' => array(
+      'field_name' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'entity_type' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The entity type this data is attached to',
+      ),
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The field instance bundle to which this row belongs, used when deleting a field instance',
+      ),
+      'entity_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The entity id this data is attached to',
+      ),
+      // @todo Consider storing language as integer.
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language for this data item.',
+      ),
+      'delta' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sequence number for this data item, used for multi-value fields',
+      ),
+      'checkbox_value' => array(
+        'description' => 'field value.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+ 
+    ),
+    'primary key' => array('field_name', 'entity_type', 'entity_id', 'delta', 'language'),
+    'indexes' => array(
+      'entity_type' => array('entity_type'),
+      'bundle' => array('bundle'),
+      'entity_id' => array('entity_id'),
+      'language' => array('language'),
+    ),
+  );
+
+   return $schema;
+}
+
+/**
+ * Creates new schema
+ */
+function image_field_checkbox_update_7200() {
+  $schema['field_image_field_checkbox'] = array(
+    'description' => 'The base table for the image_field_checkbox module.',
+    'fields' => array(
+      'field_name' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'entity_type' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The entity type this data is attached to',
+      ),
+      'bundle' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The field instance bundle to which this row belongs, used when deleting a field instance',
+      ),
+      'entity_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The entity id this data is attached to',
+      ),
+      // @todo Consider storing language as integer.
+      'language' => array(
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language for this data item.',
+      ),
+      'delta' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sequence number for this data item, used for multi-value fields',
+      ),
+       'checkbox_value' => array(
+        'description' => 'field value.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('field_name', 'entity_type', 'entity_id', 'delta', 'language'),
+    'indexes' => array(
+      'entity_type' => array('entity_type'),
+      'bundle' => array('bundle'),
+      'entity_id' => array('entity_id'),
+      'language' => array('language'),
+    ),
+  );
+
+
+  db_create_table('field_image_field_checkbox', $schema['field_image_field_checkbox']);
+}
+
+
+
+/**
+ * Remove old data
+ */
+function image_field_checkbox_update_7202() {
+  db_drop_table('image_field_checkbox');
+}
+
+
+/**
+ * Set image_field_checkbox_wrapper defaults on field instances.
+ */
+//function image_field_checkbox_update_7205() {
+//  // Grab all of the fields.
+//  $fields = field_info_field_map();
+//  foreach ($fields as $field_name => $field) {
+//    // Only modify 'image' type fields.
+//    if ($field['type'] == 'image') {
+//      foreach ($field['bundles'] as $entity_type => $bundles) {
+//        foreach ($bundles as $bundle) {
+//          // Load the instance.
+//          $instance = field_info_instance($entity_type, $field_name, $bundle);
+//          if (!isset($instance['settings']['image_field_caption']['image_field_checkbox_wrapper'])) {
+//            $instance['settings']['image_field_checkbox']['image_field_checkbox_wrapper'] = array(
+//              'image_field_checkbox_default' => array(
+//                'value' => 0,
+//              )
+//            );
+//            field_update_instance($instance);
+//            print "Updated {$field_name}\n";
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
+
+

@@ -1,0 +1,112 @@
+<?php
+
+/**
+ * Implements hook_field_attach_view_alter().
+ *
+ * Use this hook to make sure it works when using the body field in views and
+ * panels, without the need to add anything else.
+ */
+function ywp_write_field_attach_view_alter(&$output, $context) {
+  $content_types = array('challenge', 'project', 'lab');
+  if ($context['entity_type'] == 'node'
+    && in_array($context['entity']->type, $content_types)
+    && !empty($output['body'])) {
+    $node = $context['entity'];
+		
+		if (isset($context['display']['views_view'])) {
+			if ($context['display']['views_view']->name == 'challenges_masonry') {
+				return;
+			}
+		}
+		
+		if (isset($node->field_playlist_reference['und'][0])) {
+			if ($node->field_playlist_reference['und'][0]['target_id'] != '') {
+				return;
+			}
+		}
+		
+    $css = drupal_get_path('module', 'ywp_write') . '/css/write.css';
+
+    $more_link = FALSE;
+ 
+    $write_link_options = array(
+      'query' => array('field_' . $node->type => $node->nid),
+      'attributes' => array(
+          'title' => t('Click to create a post for this @type', array('@type' => $node->type)),
+          'class' => 'respond shortcode_button btn_small btn_type5 ',
+      ),
+      'html' => TRUE,
+
+     // 'respond shortcode_button btn_small btn_type5'
+    );
+    $write_link = l(t('Respond'), 'node/add/blog', $write_link_options);
+    $text = '<div class="ywp-write"><p class="ywp-write-button">' . $write_link . '</p>' .
+      ($more_link ? '<span>' . $more_link . '</span>' : '') .
+      '</div>';
+
+    $output['body'][0]['#markup'] .= $text;
+    $output['body'][0]['#attached']['css'][] = $css;
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function ywp_write_node_view($node) {
+  if ($node->type == 'blog' && !isset($node->field_workshop_challenge['und'][0])) {
+				$node->content['links']['blog']['#links']['ywp_write'] = array(
+      'title' => t('Sprout'),
+      'href' => 'node/add/blog',
+      'query' => array(
+        'field_ywp_sprout' => $node->nid,
+      ),
+      'attributes' => array(
+	      'class' => 'shortcode_button btn_small btn_type5 sprout',
+      ),
+    );
+  }
+  if ($node->type == 'blog' && isset($node->field_workshop_challenge['und'][0])) {
+	  
+				$node->content['links']['blog']['#links']['ywp_write'] = array(
+      'title' => t('Sprout'),
+      'href' => 'node/add/blog',
+      'query' => array(
+	      'field_workshop_challenge' => $node->field_workshop_challenge['und'][0]['target_id'], 
+        'field_ywp_sprout' => $node->nid,
+      ),
+      'attributes' => array(
+	      'class' => 'shortcode_button btn_small btn_type5 sprout',
+      ),
+    );
+  }
+  if ($node->type == 'x_post') {
+    $node->content['links']['x_post']['#links']['ywp_write'] = array(
+      'title' => t('Sprout'),
+      'href' => 'node/add/x-post',
+      'query' => array(
+        'field_xpost_sprout' => $node->nid,
+      ),
+      'attributes' => array(
+	      'class' => 'shortcode_button btn_small btn_type5 sprout',
+      ),
+    );
+  }
+
+  return $node;
+}
+
+/**
+ * Implements hook_node_insert().
+ *
+ * @param object $node
+ */
+function ywp_write_node_insert($node) {
+	if ($node->type == 'challenge') {
+		if (isset($node->field_playlist_reference['und'][0])) {
+		  $node->og_group_ref['und'][0]['target_id'] = $node->field_playlist_reference['und'][0]['target_id'];
+		  $node->field_from_workshop['und'][0]['value'] = 1;
+		  $node->og_group_ref['und'][0]['field_mode'] = 'default';
+		  field_attach_update('node', $node);
+	  }
+	}
+}

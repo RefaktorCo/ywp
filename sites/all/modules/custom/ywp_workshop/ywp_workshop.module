@@ -1,0 +1,238 @@
+<?php
+
+// Node types:
+const YWP_WORKSHOP_NODE_TYPE_BLOG = 'blog';
+const YWP_WORKSHOP_NODE_TYPE_CHALLENGE = 'challenge';
+const YWP_WORKSHOP_NODE_TYPE_WORKSHOP = 'playlist';
+
+// Fields:
+const YWP_WORKSHOP_FIELD_WORKSHOP_CHALLENGE = 'field_workshop_challenge';
+
+
+/**
+ * Get all users of a group
+ */
+function _get_users_in_group($nid) {
+  $query = new EntityFieldQuery();
+	$query->entityCondition('entity_type', 'user')
+  ->fieldCondition('og_user_node', 'target_id', $nid, '=');
+ 
+	$results = $query->execute();
+	
+	return $results;
+}	
+
+/**
+ * Implements hook_mail().
+ */
+function ywp_workshop_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'blog_insert_email':
+      $message['subject'] = 'A new blog post is ready for review';
+      $message['body'][] = 'Hello <a href="'.$params['user_link'].'">'.$params['user_first_name'].' '.$params['user_last_name'].'</a>,<br /><br /> <a href="'.$params['author_link'].'">'.$params['author_first_name'].' '.$params['author_last_name'].'</a>, a participant in the <a href="'.$params['workshop_node_url'].'">'.$params['workshop_node_title'].'</a> workshop, has posted a response to one of the challenges. To view the post, click here: <a href="'.$params['node_url'].'">'.$params['node_title'].'</a>. After you\'ve read the piece, please give the author some feedback if you can! <br /><br /> Thanks, <br /><br /> <a href="'.$params['workshop_author_link'].'">'.$params['workshop_author_first_name'].' '.$params['workshop_author_last_name'].'</a>';
+    break;
+    case 'blog_update_email':
+      $message['subject'] = 'A blog post has been updated';
+      $message['body'][] = 'Hello <a href="'.$params['user_link'].'">'.$params['user_first_name'].' '.$params['user_last_name'].'</a>,<br /><br /> <a href="'.$params['author_link'].'">'.$params['author_first_name'].' '.$params['author_last_name'].'</a>, a participant in the <a href="'.$params['workshop_node_url'].'">'.$params['workshop_node_title'].'</a> workshop, has updated a response to one of the challenges. To view the post, click here: <a href="'.$params['node_url'].'">'.$params['node_title'].'</a>. After you\'ve read the piece, please give the author some feedback if you can! <br /><br /> Thanks, <br /><br /> <a href="'.$params['workshop_author_link'].'">'.$params['workshop_author_first_name'].' '.$params['workshop_author_last_name'].'</a>';
+    break;
+    case 'blog_comment_email':
+      $message['subject'] = 'An blog post received a comment';
+      $message['body'][] = 'Hello <a href="'.$params['user_link'].'">'.$params['user_first_name'].' '.$params['user_last_name'].'</a>,<br /><br /> <a href="'.$params['author_link'].'">'.$params['author_first_name'].' '.$params['author_last_name'].'</a>, a participant in the <a href="'.$params['workshop_node_url'].'">'.$params['workshop_node_title'].'</a> workshop, has received a comment in a response to one of the challenges. To view the post, click here: <a href="'.$params['node_url'].'">'.$params['node_title'].'</a>. After you\'ve read the comment, please give the user some feedback if you can! <br /><br /> Thanks, <br /><br /> <a href="'.$params['workshop_author_link'].'">'.$params['workshop_author_first_name'].' '.$params['workshop_author_last_name'].'</a>';
+    break;
+  }
+}
+
+/**
+ * Implements hook_comment_presave().
+ */
+function ywp_workshop_comment_presave($comment) {
+  $node = node_load($comment->nid); 
+  
+  if (!$comment->field_workshop_challenge) {
+	  ywp_workshop_send_mail_blog($node, 'comment');
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function ywp_workshop_node_presave($node) {
+  if ($node->nid) {
+	  
+	  if ($node->body['und'][0]['value'] != $node->original->body['und'][0]['value']) {
+		  ywp_workshop_send_mail_blog($node, 'update');
+	  }	  
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function ywp_workshop_node_insert($node) {
+  ywp_workshop_send_mail_blog($node, 'insert');
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function ywp_workshop_node_update($node) {
+  //ywp_workshop_send_mail_blog($node, 'update');
+}
+
+function ywp_workshop_send_mail_blog($node, $op) {
+	if ($node->type == 'blog') {
+		global $base_url;
+		$ref = ywp_workshop_get_workshop($node);
+		$members = _get_users_in_group($ref->nid);
+		$author = user_load($node->uid);
+		$workshop_author = user_load($ref->uid);
+
+		foreach ($members['user'] as $member) {
+			$member = user_load($member->uid);
+			if (in_array("Mentor", $member->roles) || in_array("instructor", $member->roles) || in_array("administrator", $member->roles)) {
+				drupal_mail(
+					'ywp_workshop', 
+					'blog_' . $op . '_email', // blog_insert_email or blog_update_email
+					$member->mail, 
+					language_default(), 
+					$params = array(
+						'user_first_name' => $member->field_firstname['und'][0]['value'],
+						'user_last_name' => $member->field_last_name['und'][0]['value'],
+						'user_link' => $base_url.'/user/'.$member->uid,
+						'author_first_name' => $author->field_firstname['und'][0]['value'],
+						'author_last_name' => $author->field_last_name['und'][0]['value'],
+						'author_link' => $base_url.'/user/'.$author->uid,
+						'workshop_author_first_name' => $workshop_author->field_firstname['und'][0]['value'],
+						'workshop_author_last_name' => $workshop_author->field_last_name['und'][0]['value'],
+						'workshop_author_link' => $base_url.'/user/'.$workshop_author->uid,
+						'node_title' => $node->title,
+						'node_url' => $base_url.'/node/'.$node->nid,
+						'workshop_node_title' => $workshop->title,
+						'workshop_node_url' => $base_url.'/node/'.$workshop->nid
+					), 
+					variable_get('site_mail', '')
+				);
+			}
+		}
+	}
+}
+
+/**
+ * Returns list of ids of workshop members.
+ *
+ * @param object $node
+ *   Workshop, Challenge or Blog node.
+ *
+ * @return array
+ *   Array of ids of workshop members.
+ */
+function ywp_workshop_get_members($node) {
+  if ($workshop = ywp_workshop_get_workshop($node)) {
+    return og_extras_member_ids($workshop->nid);
+  }
+
+  return array();
+}
+
+/**
+ * Checks if user is a member of workshop.
+ *
+ * @param object $node
+ *   Workshop, Challenge or Blog node.
+ * @param object $account
+ *   User account.
+ *
+ * @return bool
+ *   TRUE if user is a workshop member, FALSE otherwise.
+ */
+function ywp_workshop_user_is_member($node, $account = NULL) {
+  if (!$account) {
+    $account = $GLOBALS['user'];
+  }
+
+  $uids = ywp_workshop_get_members($node);
+
+  return in_array($account->uid, $uids);
+}
+
+/**
+ * Returns Workshop node for a Challenge or a Blog.
+ *
+ * @param object $node
+ *   Challenge or Blog node.
+ *
+ * @return object|null
+ *   Workshop node or NULL if Blog node is not responding to any Workshop
+ *   Challenge or Challenge is not referenced any Workshop.
+ */
+function ywp_workshop_get_workshop($node) {
+  // We may be at the middle of Workshop updating process. In this case get
+  // Workshop node from static variable to have up-to-date object with all
+  // changes performed (but possibly not saved to the DB).
+  // @see ywp_access_node_update()
+  $node_update = drupal_static('ywp_access_node_update');
+  if ($node_update && $node_update->type == YWP_WORKSHOP_NODE_TYPE_WORKSHOP) {
+    return $node_update;
+  }
+
+  switch ($node->type) {
+
+    case YWP_WORKSHOP_NODE_TYPE_WORKSHOP:
+      return $node;
+      break;
+
+    case YWP_WORKSHOP_NODE_TYPE_CHALLENGE:
+      if (isset($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id'])) {
+        return node_load($node->{OG_AUDIENCE_FIELD}[LANGUAGE_NONE][0]['target_id']);
+      }
+      break;
+
+    case YWP_WORKSHOP_NODE_TYPE_BLOG:
+      if ($challenge = ywp_workshop_get_blog_challenge($node)) {
+        return ywp_workshop_get_workshop($challenge);
+      }
+      break;
+  }
+
+  return NULL;
+}
+
+/**
+ * Returns referenced Challenge for a Blog.
+ *
+ * @param object $node
+ *   Blog node.
+ *
+ * @return object|null
+ *   Challenge node or NULL if Blog node is not responding to any Challenge.
+ */
+function ywp_workshop_get_blog_challenge($node) {
+  if (isset($node->{YWP_WORKSHOP_FIELD_WORKSHOP_CHALLENGE}[LANGUAGE_NONE][0]['target_id'])) {
+    return node_load($node->{YWP_WORKSHOP_FIELD_WORKSHOP_CHALLENGE}[LANGUAGE_NONE][0]['target_id']);
+  }
+  return NULL;
+}
+
+/**
+ * Returns Challenge nodes for given Workshop.
+ *
+ * @param object $node
+ *   Workshop node.
+ *
+ * @return array
+ *   Array of Challenge nodes keyed by their ids.
+ */
+function ywp_workshop_get_challenges($node) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', YWP_WORKSHOP_NODE_TYPE_CHALLENGE)
+    ->fieldCondition(OG_AUDIENCE_FIELD, 'target_id', $node->nid);
+
+  $result = $query->execute();
+  if (isset($result['node'])) {
+    $nids = array_keys($result['node']);
+    return node_load_multiple($nids);
+  }
+
+  return array();
+}

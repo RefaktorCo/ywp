@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the YWP Migration Content Types feature.
+ */
+
+include_once 'ywp_migration_content_types.features.inc';

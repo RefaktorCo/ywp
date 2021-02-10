@@ -1,0 +1,25 @@
+table.field-multiple-table {
+    border: 1px solid #E1E2DC;
+}
+
+.group-fields-inline > .form-wrapper {
+    display: inline-block;
+    margin-right: 1rem;
+    vertical-align: top;
+}
+
+.group-fields-inline > .form-wrapper:last-child {
+    margin-right: 0;
+}
+
+.group-fields-inline input {
+    max-width: 240px;
+}
+
+.group-fields-inline .field-type-list-boolean.field-widget-options-onoff {
+    margin-top: 32px;
+}
+
+.field-type-number-integer.field-widget-select-or-other input.select-or-other-other.form-text {
+    max-width: 33px;
+}

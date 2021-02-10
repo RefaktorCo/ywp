@@ -1,0 +1,19 @@
+name = Simple Image Rotate
+description = Simple image rotation
+package = Media
+core = "7.x"
+dependencies[] = image
+
+; Information added by Drupal.org packaging script on 2017-01-17
+version = "7.x-1.2"
+core = "7.x"
+project = "simple_image_rotate"
+datestamp = "1484644386"
+
+
+; Information added by Drupal.org packaging script on 2017-10-09
+version = "7.x-2.4"
+core = "7.x"
+project = "simple_image_rotate"
+datestamp = "1507554117"
+

@@ -1,0 +1,6 @@
+name = YWP Accordion
+description = Custom module to allow blocks to display in an "accordion" style.
+core = 7.x
+package = YWP
+
+files[] = ywp_accordion.module

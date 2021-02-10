@@ -1,0 +1,133 @@
+<?php
+
+/**
+ * @file
+ * Provides JS dialog functionality.
+ */
+
+/**
+ * Implements hook_libraries_info().
+ */
+function ywp_dialog_libraries_info() {
+  $libraries = array();
+
+  // Magnific Popup library is required for dialogs.
+  $libraries['magnific-popup'] = array(
+    'name' => 'Magnific Popup',
+    'vendor url' => 'http://dimsemenov.com/plugins/magnific-popup/',
+    'download url' => 'http://dimsemenov.com/plugins/magnific-popup/',
+    'version arguments' => array(
+      'file' => 'jquery.magnific-popup.min.js',
+      'pattern' => '@Magnific Popup v([0-9\.]+)@',
+      'lines' => 1,
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.magnific-popup.min.js',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_init().
+ */
+function ywp_dialog_init() {
+  // System AJAX library is required for MFP AJAX content to be loaded.
+  drupal_add_library('system', 'drupal.ajax');
+  // Magnific Popup library is required for dialogs.
+  libraries_load('magnific-popup');
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ywp_dialog_theme() {
+  return array(
+    'ywp_dialog_popup' => array(
+      'variables' => array(
+        'html_id' => NULL,
+        'content' => NULL,
+        'class' => NULL,
+      ),
+      'template' => 'templates/ywp-dialog-popup',
+    ),
+  );
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+function ywp_dialog_page_alter(&$page) {
+  // Add popup (dialog that opens automatically on page load) to the page (but
+  // not on admin pages).
+  if (!path_is_admin(current_path()) && isset($_SESSION['ywp_dialog']['popup'])) {
+    // Just shortcuts.
+    $popup = $_SESSION['ywp_dialog']['popup'];
+    $content = &$page['content'];
+
+    // JS settings required to automatically open popup.
+    $settings = array(
+      'title' => isset($popup['title']) ? $popup['title'] : NULL,
+      'options' => isset($popup['options']) ? $popup['options'] : NULL,
+    );
+
+    // Inline popups.
+    if (isset($popup['content'])) {
+      // Unique html id of dialog content.
+      $id = drupal_html_id('ywp_dialog_popup');
+
+      // Dialog content.
+      $content['ywp_dialog_popup'] = array(
+        '#theme' => 'ywp_dialog_popup',
+        '#html_id' => $id,
+        '#content' => $popup['content'],
+        '#class' => isset($popup['class']) ? $popup['class'] : '',
+      );
+
+      // Specific dialog settings.
+      $settings['type'] = 'inline';
+      $settings['src'] = '#' . $id;
+    }
+    // AJAX popups.
+    elseif (isset($popup['href'])) {
+
+      // Just add specific dialog settings, nothing more.
+      $settings['type'] = 'ajax';
+      $settings['src'] = $popup['href'];
+    }
+
+    // Add required JS settings.
+    $content['#attached']['js'][] = array(
+      'data' => array(
+        'ywpDialog' => array(
+          'popup' => $settings,
+        ),
+      ),
+      'type' => 'setting',
+    );
+  }
+}
+
+/**
+ * Adds dialog that opens automatically on page load.
+ *
+ * @param array $popup
+ *   Popup options:
+ *    - content: string or render array to be shown in inline dialog, OR
+ *    - href: url of AJAX content to be shown in ajax dialog.
+ *    - title: dialog title (optional).
+ *    - options: dialog options (optional).
+ */
+function ywp_dialog_set_popup($popup) {
+  $_SESSION['ywp_dialog']['popup'] = $popup;
+}
+
+/**
+ * Removes popup, if any.
+ */
+function ywp_dialog_remove_popup() {
+  $_SESSION['ywp_dialog']['popup'] = NULL;
+}

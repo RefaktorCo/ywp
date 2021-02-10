@@ -1,0 +1,4 @@
+name = resave_blog_node_batch
+description = custom resave blog nodes
+core = 7.x
+dependencies[] = ywp_write

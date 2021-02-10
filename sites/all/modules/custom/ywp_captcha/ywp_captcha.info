@@ -1,0 +1,4 @@
+name = YWP: CAPTCHA
+description = Provides custom CAPTCHA stuff.
+core = 7.x
+package = YWP

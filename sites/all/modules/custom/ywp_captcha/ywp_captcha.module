@@ -1,0 +1,52 @@
+<?php
+/**
+ * @file
+ * Provides custom CAPTCHA stuff.
+ */
+
+/**
+ * Implements hook_node_insert().
+ *
+ * @param $node
+ */
+function ywp_captcha_node_insert($node) {
+  ywp_captcha__set_webform_captcha('default', $node);
+}
+
+/**
+ * Implements hook_node_update();
+ *
+ * @param $node
+ */
+function ywp_captcha_node_update($node) {
+  ywp_captcha__set_webform_captcha('default', $node);
+}
+
+/**
+ * Implements hook_node_delete().
+ *
+ * @param $node
+ */
+function ywp_captcha_node_delete($node) {
+  ywp_captcha__set_webform_captcha(NULL, $node);
+}
+
+/**
+ * Helper function to set (or unset) a captcha whenever any webform is changed.
+ *
+ * @param $captcha_type
+ * @param $node
+ */
+function ywp_captcha__set_webform_captcha($captcha_type, $node) {
+  if (module_exists('webform') && module_exists('captcha') && !empty($node->webform)) {
+    // Only add CAPTCHA if webform can be submitted by anonymous users.
+    if (!in_array(1, $node->webform['roles'])) {
+      $captcha_type = NULL;
+    }
+    $nid = $node->nid;
+    $form_id = 'webform_client_form_' . $nid;
+    // Do add or remove CAPTCHA to/from webform.
+    module_load_include('inc', 'captcha');
+    captcha_set_form_id_setting($form_id, $captcha_type);
+  }
+}

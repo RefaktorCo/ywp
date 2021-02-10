@@ -1,0 +1,5 @@
+name = Shoutbox block element order
+description = Moves the Shoutbox block's input field above the shouts. Currently has no UI. To customize the order, see the comments in the code of shoutbox_block_order.module. Contributed by <a href="http://drupal.org/user/29839">Janne Cederberg</a>.
+core = 7.x
+package = Shoutbox
+dependencies[] = shoutbox

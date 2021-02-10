@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Oyster Features feature.
+ */
+
+include_once 'oyster_features.features.inc';

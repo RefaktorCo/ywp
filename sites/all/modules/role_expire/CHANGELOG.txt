@@ -1,0 +1,29 @@
+Role expire 7.x-1.0, 2018-09-11
+-------------------------------
+
+Improved README file
+#2406975: Remove 'module' key in hook_rules_action_info()
+#2891810, #1280450, #1293846: More flexibility for default durations (recovered lost feature of 7.x-1.0-beta2)
+#1899606: Support role assignment modules
+
+Role expire 7.x-1.0-rc3, 2018-08-12
+------------------------------------
+
+#2401985: Expiration date is not set when creating a new user.
+#2563753: Rules Action Set Role Expire has Error if empty user given as parameter
+
+Role expire 7.x-1.0-rc2, 2018-01-09
+-----------------------------------
+
+#2931638: Crash when saving a role without changing the expiry duration
+
+Role expire 7.x-1.0-rc1, 2017-06-28
+-----------------------------------
+
+#1587720: Set new role on role expire ...
+#2296491: Delete role expire data in hook_user_delete
+#1835572: Feeds Integration?
+#1820306: Integration of Rules Event on Role Expiration
+#2341269: delete records from 'role_expire' and 'role_expire_length' tables
+#1370262: Role Expire 7.x doesn't use Rules 2.0 API
+#1442936: Strict warning : Declaration of role_expire_handler_field_rid::pre_render() should be compatible with that of views_handler_fiel

@@ -1,0 +1,344 @@
+<?php
+
+/**
+ * @file
+ * Controls Workshops, Challenges and Blogs visibility.
+ */
+
+// Node types:
+const YWP_ACCESS_NODE_TYPE_BLOG = 'blog';
+const YWP_ACCESS_NODE_TYPE_CHALLENGE = 'challenge';
+const YWP_ACCESS_NODE_TYPE_WORKSHOP = 'playlist';
+
+// Blog field:
+const YWP_ACCESS_FIELD_BLOG_VISIBILITY = 'field_blog_visibility';
+const YWP_ACCESS_FIELD_WORKSHOP_CHALLENGE = 'field_workshop_challenge';
+// Workshop fields:
+const YWP_ACCESS_FIELD_WORKSHOP_VISIBILITY = 'field_workshop_visibility';
+
+// Module's permissions:
+const YWP_ACCESS_PERMISSION_VIEW_PRIVATE_ = 'ywp view private ';
+const YWP_ACCESS_PERMISSION_VIEW_PRIVATE_WORKSHOP = 'ywp view private playlist';
+const YWP_ACCESS_PERMISSION_VIEW_PRIVATE_CHALLENGE = 'ywp view private challenge';
+const YWP_ACCESS_PERMISSION_VIEW_PRIVATE_BLOG = 'ywp view private blog';
+
+// Visibility options:
+const YWP_ACCESS_VISIBILITY_PRIVATE = 'private';
+const YWP_ACCESS_VISIBILITY_PROTECTED = 'protected';
+const YWP_ACCESS_VISIBILITY_PUBLIC = 'public';
+
+
+/**
+ * Implements hook_permission().
+ */
+function ywp_access_permission() {
+  return array(
+    YWP_ACCESS_PERMISSION_VIEW_PRIVATE_WORKSHOP => array(
+      'title' => t('View private Workshops'),
+      'description' => t('View private Workshop nodes regardless of permission restrictions.'),
+      'restrict access' => TRUE,
+    ),
+    YWP_ACCESS_PERMISSION_VIEW_PRIVATE_CHALLENGE => array(
+      'title' => t('View private Challenges'),
+      'description' => t('View private Challenge nodes regardless of permission restrictions.'),
+      'restrict access' => TRUE,
+    ),
+    YWP_ACCESS_PERMISSION_VIEW_PRIVATE_BLOG => array(
+      'title' => t('View private Blogs'),
+      'description' => t('View private Blog nodes regardless of permission restrictions.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_alter().
+ *
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ */
+function ywp_access_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'blog_node_form':
+      $node = $form_state['node'];
+      $params = drupal_get_query_parameters();
+
+      $workshop_challenge = NULL;
+      if (!empty($params[YWP_ACCESS_FIELD_WORKSHOP_CHALLENGE])) {
+        $workshop_challenge = $params[YWP_ACCESS_FIELD_WORKSHOP_CHALLENGE];
+      }
+      elseif (!empty($node->{YWP_ACCESS_FIELD_WORKSHOP_CHALLENGE})) {
+        $workshop_challenge = $node->{YWP_ACCESS_FIELD_WORKSHOP_CHALLENGE}[LANGUAGE_NONE][0]['target_id'];
+      }
+      elseif (!empty($form_state['ywp'][YWP_ACCESS_FIELD_BLOG_VISIBILITY])) {
+        $workshop_challenge = $form_state['ywp'][YWP_ACCESS_FIELD_BLOG_VISIBILITY];
+      }
+
+      // Blog is not responding to some Workshop's Challenge. Remove "Private"
+      // visibility option and set default option to "Public".
+      if (!$workshop_challenge) {
+        unset($form[YWP_ACCESS_FIELD_BLOG_VISIBILITY][LANGUAGE_NONE]['#options'][YWP_ACCESS_VISIBILITY_PRIVATE]);
+        $form[YWP_ACCESS_FIELD_BLOG_VISIBILITY][LANGUAGE_NONE]['#default_value'] = YWP_ACCESS_VISIBILITY_PUBLIC;
+      }
+
+      // Save workshop challenge to form state so it will be accessible in
+      // ajax calls as well.
+      // @see https://app.asana.com/0/522870154322169/712606054902165/f
+      $form_state['ywp'][YWP_ACCESS_FIELD_BLOG_VISIBILITY] = $workshop_challenge;
+
+      break;
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ *
+ * @param object $node
+ */
+function ywp_access_node_update($node) {
+  // Save node being updated in a static variable so it can be accessed in
+  // other functions called from this one.
+  $node_update = &drupal_static(__FUNCTION__, NULL);
+  $node_update = $node;
+
+  // Update Challenge nodes permissions when their parent Workshop node is
+  // updated.
+  if ($node->type == YWP_ACCESS_NODE_TYPE_WORKSHOP) {
+    foreach (ywp_workshop_get_challenges($node) as $challenge) {
+      node_access_acquire_grants($challenge);
+    }
+  }
+}
+
+/**
+ * Implements hook_node_grants().
+ *
+ * @param object $account
+ * @param string $op
+ *
+ * @return array
+ */
+function ywp_access_node_grants($account, $op) {
+  $grants = array();
+
+  if ($op == 'view') {
+    // Grant access if user can bypass node's "private" visibility option.
+    foreach (array(YWP_ACCESS_NODE_TYPE_WORKSHOP, YWP_ACCESS_NODE_TYPE_CHALLENGE, YWP_ACCESS_NODE_TYPE_BLOG) as $type) {
+      if (user_access(YWP_ACCESS_PERMISSION_VIEW_PRIVATE_ . $type, $account)) {
+        $grants['ywp_access_bypass_' . $type] = array(1);
+      }
+    }
+
+    // Grant access to authenticated users.
+    if ($account->uid) {
+      $grants['ywp_access_authenticated'] = array(1);
+    }
+
+    // Grant access to node author.
+    $grants['ywp_access_author'] = array($account->uid);
+
+    // Grant access for all workshops user is member of.
+    $nids = og_get_groups_by_user($account, 'node');
+    $nodes = node_load_multiple($nids);
+    $grants['ywp_access_workshop'] = array();
+    foreach ($nodes as $node) {
+      // Only grans access for Workshop (former Playlist) groups.
+      if ($node->type == YWP_ACCESS_NODE_TYPE_WORKSHOP) {
+        $grants['ywp_access_workshop'][] = $node->nid;
+      }
+    }
+  }
+
+  return $grants;
+}
+
+/**
+ * Implements hook_node_access_records().
+ *
+ * @param object $node
+ *
+ * @return array|null
+ */
+function ywp_access_node_access_records($node) {
+  $type = $node->type;
+
+  // Do not provide grants for unpublished nodes.
+  if (!$node->status) {
+    return NULL;
+  }
+
+  $grants = array();
+
+  switch (ywp_access_visibility($node)) {
+
+    // No access restrictions if visibility is "public".
+    case YWP_ACCESS_VISIBILITY_PUBLIC:
+      break;
+
+    case YWP_ACCESS_VISIBILITY_PROTECTED:
+      // Access for authenticated users.
+      $grants[] = array(
+        'realm' => 'ywp_access_authenticated',
+        'gid' => 1,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+      break;
+
+    case YWP_ACCESS_VISIBILITY_PRIVATE:
+      // Access for users with "bypass" permissions.
+      $grants[] = array(
+        'realm' => 'ywp_access_bypass_' . $type,
+        'gid' => 1,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+
+      // Access for node author.
+      $grants[] = array(
+        'realm' => 'ywp_access_author',
+        'gid' => $node->uid,
+        'grant_view' => 1,
+        'grant_update' => 0,
+        'grant_delete' => 0,
+        'priority' => 0,
+      );
+
+      // Access for workshop members.
+      if ($workshop = ywp_workshop_get_workshop($node)) {
+        $grants[] = array(
+          'realm' => 'ywp_access_workshop',
+          'gid' => $workshop->nid,
+          'grant_view' => 1,
+          'grant_update' => 0,
+          'grant_delete' => 0,
+          'priority' => 0,
+        );
+      }
+      break;
+  }
+
+  return $grants;
+}
+
+/**
+ * Implements hook_node_access().
+ *
+ * @param object|string $node
+ * @param string $op
+ * @param object $account
+ *
+ * @return string
+ */
+function ywp_access_node_access($node, $op, $account) {
+
+  // Do not touch node types.
+  if (!is_object($node)) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  $type = $node->type;
+  $types = array(
+    YWP_ACCESS_NODE_TYPE_WORKSHOP,
+    YWP_ACCESS_NODE_TYPE_CHALLENGE,
+    YWP_ACCESS_NODE_TYPE_BLOG
+  );
+
+  // Only touch Workshop, Challenge and Blog node types.
+  if (!in_array($type, $types)) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // Only affect node viewing.
+  if ($op != 'view') {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // Do not touch node authors and content administrators.
+  if ($node->uid == $account->uid || user_access(YWP_ACCESS_PERMISSION_VIEW_PRIVATE_ . $type, $account)) {
+    return NODE_ACCESS_IGNORE;
+  }
+
+  // The rest depends on node visibility.
+  switch (ywp_access_visibility($node)) {
+
+    // Do nothing in case of public visibility.
+    case YWP_ACCESS_VISIBILITY_PUBLIC:
+      return NODE_ACCESS_IGNORE;
+
+    // Only authenticated users can view protected nodes.
+    case YWP_ACCESS_VISIBILITY_PROTECTED:
+      return !!$account->uid;
+
+    // Only workshop members can view private nodes.
+    case YWP_ACCESS_VISIBILITY_PRIVATE:
+      return ywp_workshop_user_is_member($node, $account);
+
+    // This shouldn't be the case, but who knows...
+    default:
+      return NODE_ACCESS_DENY;
+  }
+
+}
+
+/**
+ * Returns node's visibility option.
+ *
+ * If visibility field is not set, then default value is returned. For
+ * blog nodes that are responding to a challenge, default is "private",
+ * otherwise default visibility is "public". For workshop nodes default is
+ * "public".
+ *
+ * @param object $node
+ *   Blog node.
+ *
+ * @return string
+ *   Blog visibility option. One of following values:
+ *    - YWP_ACCESS_VISIBILITY_PRIVATE
+ *    - YWP_ACCESS_VISIBILITY_PROTECTED
+ *    - YWP_ACCESS_VISIBILITY_PUBLIC
+ */
+function ywp_access_visibility($node) {
+  switch ($node->type) {
+
+    // Workshop nodes.
+    case YWP_ACCESS_NODE_TYPE_WORKSHOP:
+      if (isset($node->{YWP_ACCESS_FIELD_WORKSHOP_VISIBILITY}[LANGUAGE_NONE][0]['value'])) {
+        return $node->{YWP_ACCESS_FIELD_WORKSHOP_VISIBILITY}[LANGUAGE_NONE][0]['value'];
+      }
+      else {
+        return YWP_ACCESS_VISIBILITY_PUBLIC;
+      }
+      break;
+
+    // Challenge nodes: repeat Workshop's visibility, if any.
+    case YWP_ACCESS_NODE_TYPE_CHALLENGE:
+      if ($workshop = ywp_workshop_get_workshop($node)) {
+        return ywp_access_visibility($workshop);
+      }
+      else {
+        return YWP_ACCESS_VISIBILITY_PUBLIC;
+      }
+      break;
+
+    // Blog nodes.
+    case YWP_ACCESS_NODE_TYPE_BLOG:
+      if (isset($node->{YWP_ACCESS_FIELD_BLOG_VISIBILITY}[LANGUAGE_NONE][0]['value'])) {
+        return $node->{YWP_ACCESS_FIELD_BLOG_VISIBILITY}[LANGUAGE_NONE][0]['value'];
+      }
+      elseif (ywp_workshop_get_blog_challenge($node)) {
+        return YWP_ACCESS_VISIBILITY_PRIVATE;
+      }
+      else {
+        return YWP_ACCESS_VISIBILITY_PUBLIC;
+      }
+      break;
+  }
+
+  return YWP_ACCESS_VISIBILITY_PUBLIC;
+}

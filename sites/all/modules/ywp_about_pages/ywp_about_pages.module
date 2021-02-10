@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the YWP About Pages feature.
+ */
+
+include_once 'ywp_about_pages.features.inc';

@@ -1,0 +1,4 @@
+name = YWP: Magazine
+description = Provides YWP Magazine content.
+core = 7.x
+package = YWP

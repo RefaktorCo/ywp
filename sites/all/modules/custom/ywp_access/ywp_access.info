@@ -1,0 +1,4 @@
+name = YWP: Access
+description = Controls Workshops, Challenges and Blogs visibility.
+core = 7.x
+package = YWP

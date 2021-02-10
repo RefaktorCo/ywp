@@ -1,0 +1,6 @@
+name = YWP Author
+description = Custom module to display "about the author" info.
+core = 7.x
+package = YWP
+
+files[] = ywp_author.module

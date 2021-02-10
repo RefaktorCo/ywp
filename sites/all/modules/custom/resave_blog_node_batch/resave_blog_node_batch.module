@@ -1,0 +1,71 @@
+<?php
+
+function resave_blog_node_batch_menu() {
+  $items = array();
+  $items['admin/config/resave_blog_node_batch'] = array(
+    'title' => 'Resave blog nodes',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('resave_blog_node_batch_form'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+function resave_blog_node_batch_form() {
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Resave'
+  );
+  return $form;
+}
+
+function resave_blog_node_batch_form_submit(&$form, &$form_state) {
+  $operations = array();
+
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+	->condition('n.type', 'blog');
+  $result = $query->execute();
+
+  while($nid = $result->fetchField()) {
+	$operations[] = array(
+	  'resave_blog_node_batch_op_1', array($nid),
+	);
+  }
+  $batch = array(
+    'operations' => $operations,
+    'finished' => 'resave_blog_node_batch_finished',
+  );
+  batch_set($batch);
+}
+
+function resave_blog_node_batch_op_1($nid, &$context) {
+  $context['message'] = t('Resaving...');
+
+  $node = node_load($nid);
+  // if Private
+  if (isset($node->field_workshop_challenge['und'][0]['target_id'])) {
+    node_save($node);
+  }
+}
+//
+function resave_blog_node_batch_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message('Resave success');
+  }
+  else {
+    // An error occurred.
+    // $operations contains the operations that remained unprocessed.
+    $error_operation = reset($operations);
+    drupal_set_message(
+      t('An error occurred while processing @operation with arguments : @args',
+        array(
+          '@operation' => $error_operation[0],
+          '@args' => print_r($error_operation[0], TRUE),
+        )
+      ),
+      'error'
+    );
+  }
+}

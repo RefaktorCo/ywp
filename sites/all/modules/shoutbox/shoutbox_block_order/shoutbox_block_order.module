@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_block_view_MODULE_DELTA_alter(&$data)
+ * 
+ * The purpose of the module is to control the order of the elements on the Shoutbox block.
+ * Smaller values float to the top; alter values as feel fit.
+ */
+function shoutbox_block_order_block_view_shoutbox_shoutbox_alter(&$data) {
+  $data['content']['form']['#weight'] = 0;
+  $data['content']['all-shoutout-links']['#weight'] = 1;
+  $data['content']['posts']['#weight'] = 2;
+  $data['content']['#sorted'] = false;
+}
+

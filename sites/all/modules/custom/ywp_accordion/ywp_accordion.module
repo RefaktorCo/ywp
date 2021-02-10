@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Implementation of hook_form_alter
+*/
+function ywp_accordion_form_alter(&$form, &$form_state, $form_id) {
+	switch ($form_id) {
+    case 'block_admin_configure':
+    case 'block_add_block_form':
+      $block = new stdClass();
+	    $block->module = $form['module']['#value'];
+	    $block->delta = $form['delta']['#value'];
+	    
+			$setting = _ywp_accordion_get_data($block);
+          
+	    $form['settings']['ywp_accordion'] = array(
+	      '#type' => 'fieldset',
+	      '#title' => t('YWP Accordion'),
+	      '#collapsible' => TRUE,
+	      '#tree' => TRUE,
+	    );
+      $form['settings']['ywp_accordion']['toggle'] = array(
+	      '#type' => 'checkbox',
+	      '#title' => t('Accordion'),
+	      '#description' => t('Select this option to display the block in an accordion style.'),
+	      '#default_value' => (isset($setting['toggle'])) ? $setting['toggle'] : FALSE,
+			);
+			$form['#submit'][] = 'ywp_accordion_form_submit';
+	     
+    break;
+  }
+  return $form;
+}
+
+/**
+ * Implementation of hook_submit()
+*/
+function ywp_accordion_form_submit($form, &$form_state) {
+	$block = new stdClass();
+  $block->module = $form['module']['#value'];
+  $block->delta = $form_state['values']['delta'];
+    
+  $data = array(
+    'toggle' => $form_state['values']['ywp_accordion']['toggle'],
+  );
+  
+  _ywp_accordion_save_data($block, $data);
+}
+
+/**
+ * Implementation of template_preprocess_block
+*/
+function ywp_accordion_preprocess_block(&$variables) {
+  $data = _ywp_accordion_get_data($variables['block']);
+  
+  if($data) {
+    if ($data['toggle'] == 1) {
+	    $variables['accordion'] = TRUE;
+    }
+	}  
+}
+
+/**
+ * Function to get toggle variable data
+ * @param object - Block object
+*/
+function _ywp_accordion_get_data($block) {
+  if (!isset($block->module) && !isset($block->delta)) {
+    return FALSE;
+  }
+  $varname = 'ywp_accordion' . $block->module .'_'. $block->delta;
+  $result = variable_get($varname, NULL);
+  
+  return $result;
+}
+
+/**
+ * Function to save toggle variable data
+ * @param object - Block object
+ * @param array - Array containing data
+*/
+function _ywp_accordion_save_data($block, $data) {
+  if (!isset($block->module) || !isset($block->delta)) {
+    return FALSE;
+  }
+  $varname = 'ywp_accordion' . $block->module .'_'. $block->delta;
+  variable_set($varname, $data);
+}

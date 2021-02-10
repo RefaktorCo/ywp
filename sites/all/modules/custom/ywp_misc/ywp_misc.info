@@ -1,0 +1,6 @@
+name = YWP Misc
+description = Misc helper module for YWP.
+core = 7.x
+package = YWP
+
+files[] = ywp_misc.module

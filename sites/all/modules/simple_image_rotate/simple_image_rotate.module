@@ -1,0 +1,189 @@
+<?php
+
+/**
+ * @file
+ * Allows users to rotate images on node forms.
+ *
+ * To use this feature the "Enable rotate icon" checkbox should be marked for
+ * an image field on its settings page (Administration ┬╗ Structure ┬╗ Content
+ * types ┬╗ Your content type ┬╗ Manage fields ┬╗ Your image field) and an acting
+ * user should have the "rotate images" permission. It will add a small rotate
+ * icon near uploaded image. Clicking to this icon rotates image clockwise with
+ * jQuery only. After saving the node the image file is actually rotated and
+ * renamed. The module requires jQuery library and therefore you will probably
+ * need to install the jQuery Update module.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function simple_image_rotate_permission() {
+
+  return array(
+    'rotate images' => array(
+      'title' => t('Rotate images'),
+      'description' => t('Allows a user to rotate images.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * 
+ * Add enable rotate icon checkbox to image field forms.
+ */
+function simple_image_rotate_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id) {
+
+  $form['instance']['enable_rotate'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable rotate icon'),
+    '#description' => t('If checked rotate icon will appear near each uploaded image.'),
+    '#default_value' => isset($form['#instance']['enable_rotate']) ? $form['#instance']['enable_rotate'] : 0,
+    '#weight' => 16,
+  );
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function simple_image_rotate_field_widget_form_alter(&$element, &$form_state, $context) {
+
+  // Check if user can rotate images.
+  if ($context['field']['type'] == 'image' && user_access('rotate images')) {
+
+    // Check if image rotation is enabled.
+    if (isset($context['instance']['enable_rotate']) && $context['instance']['enable_rotate']) {
+      $element['#attached']['js'][] = drupal_get_path('module', 'simple_image_rotate') . '/js/simple_image_rotate.js';
+      $element['#attached']['css'][] = drupal_get_path('module', 'simple_image_rotate') . '/css/simple_image_rotate.css';
+
+      // Loop through all images.
+      foreach (element_children($element) as $delta) {
+
+        // Skip upload new image button.
+        if (isset($element['#file_upload_delta']) && $delta >= $element['#file_upload_delta'])
+          continue;
+
+        // Add rotate icon and hidden rotate field.
+        $element[$delta]['rotate'] = array(
+          '#type' => 'hidden',
+          '#attributes' => array('class' => 'rotate'),
+          '#value' => 0
+        );
+        $element[$delta]['#process'][] = 'simple_image_rotate_widget_process';
+      }
+    }
+  }
+}
+
+/**
+ * Element #process callback function; process widget type image_image.
+ */
+function simple_image_rotate_widget_process($element, &$form_state, $form) {
+
+  if (isset($element['#file']->fid) && $element['#file']->fid > 0) {
+    $rotate_link = l(
+        t('&#8635;'), '', array('html' => TRUE,
+      'attributes' => array(
+        'title' => t('Rotate image clockwise'),
+        'class' => array('rotate-icon'),
+        'data-rotate' => 0,
+        'data-weight' => $element['#parents'][2],
+        'data-fid' => $element['#file']->fid)
+        )
+    );
+    $element['preview']['#markup'] .= $rotate_link;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_entity_presave().
+ */
+function simple_image_rotate_entity_presave($entity, $type) {
+  simple_image_rotate_rotate_image($entity, $type);
+}
+
+/**
+ * Implements hook_profile2_presave().
+ */
+function simple_image_rotate_profile2_presave($profile) {
+  simple_image_rotate_rotate_image($profile, 'profile2');
+}
+
+/**
+ * Rotates image.
+ */
+function simple_image_rotate_rotate_image(&$entity, $type) {
+
+  // For some reason sometime its called twice, so $entity->rotated will stop calling twice
+  if (!isset($entity->rotated)) {
+    $entity->rotated = TRUE;
+    // Load all image fields.
+    $image_fields = array_keys(field_read_fields(array('type' => 'image')));
+    // Loop through all image fields.
+    foreach ($image_fields as $field) {
+      $field_language = field_language($type, $entity, $field);
+      // Image field exists in the entity.
+      if (isset($entity->{$field}) && is_array($entity->{$field}[$field_language])) {
+
+        // Loop through all images of this field.
+        foreach ($entity->{$field}[$field_language] as $delta => $value) {
+
+          // If rotate angle is indicated.
+          if (isset($value['rotate']) && $value['rotate']) {
+
+            // Load image file.
+            $file = file_load($value['fid']);
+
+            // Get a new filename with '_r[counter]' suffix.
+            if (preg_match('#_r([\d]+)\.[^.]+$#i', $file->uri, $matches)) {
+              $file_counter = $matches[1];
+              $new_uri = $file->uri;
+            }
+            else {
+              $file_counter = 1;
+              $pos = strrpos($file->uri, '.');
+              $new_uri = substr_replace($file->uri, '_r' . $file_counter, $pos, 0);
+            }
+            // Increment filename counter if filename is occupied.
+            while (file_exists($new_uri)) {
+              $find = '_r' . $file_counter;
+              $file_counter++;
+              $replace = '_r' . $file_counter;
+              $new_uri = str_replace($find, $replace, $new_uri);
+            }
+
+            // Move image file to a new location.
+            if (file_move($file, $new_uri, 'FILE_EXIST_ERROR')) {
+
+              // Update file object after moving file.
+              $file = file_load($value['fid']);
+
+              // Rotate image and save image object.
+              $image = image_load($file->uri);
+              try {
+                image_rotate($image, $value['rotate']);
+                if (image_save($image)) {
+
+                  // Reload image to get new width, height and filesize.
+                  $image = image_load($file->uri);
+
+                  // Update image width and height in entity.
+                  $entity->{$field}[$field_language][$delta]['width'] = $image->info['width'];
+                  $entity->{$field}[$field_language][$delta]['height'] = $image->info['height'];
+
+                  // Update file.
+                  $file->filesize = $image->info['file_size'];
+                  file_save($file);
+                }
+              }
+              catch (Exception $ex) {
+                watchdog('simple_image_rotate', t('Problem rotating image: ') . $ex->getMessage());
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

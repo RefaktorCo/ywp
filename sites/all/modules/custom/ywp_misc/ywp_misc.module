@@ -1,0 +1,435 @@
+<?php
+
+/**
+ * Implements hook_views_pre_render().
+ */	
+function ywp_misc_views_pre_render(&$view) {
+	global $user;
+	if ($view->name == 'my_content') {
+		if ($user->uid != $view->args[0] AND !in_array('administrator', $user->roles)) {
+			unset($view->exposed_widgets);
+		}
+	}
+}	
+	
+/**
+ * Implements hook_theme().
+ */
+function ywp_misc_theme() {	
+	return array(
+	  'oyster_slider' => array(
+      'template' => 'theme/oyster-slider',
+      'variables' => array('items' => NULL),
+    ),
+   'oyster_slides' => array(
+      'variables' => array('items' => NULL),
+    ),
+  );
+}
+
+/**
+ * Helper function to return array of comments.
+ */
+function _ywp_misc_get_comments($node){
+	$result = db_select('comment')
+  ->fields('comment', array('cid'))
+  ->condition('nid', $node->nid, '=')
+  ->execute();
+
+  $cids = $result->fetchCol();
+  $comments=comment_load_multiple($cids);
+  return $comments;
+}
+
+/**
+ * Implements hook_mail().
+ */
+function ywp_misc_mail($key, &$message, $params) {
+  switch ($key) {
+    case 'node_update':
+      $message['subject'] = 'New update at Young Writers Project';
+      $message['body'][] = 'Dear <a href="'.$params['user_link'].'">'.$params['user_first_name'].' '.$params['user_last_name'].'</a>, Your comment had some impact! <a href="'.$params['author_link'].'">'.$params['author_first_name'].' '.$params['author_last_name'].'</a> has revised <a href="'.$params['node_url'].'">'.$params['node_title'].'</a> on which you left a comment. Go check out what the author has done! And thanks for commenting; it is what makes the YWP community so strong. gg ...';
+    break;
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function ywp_misc_node_update($node) {
+	global $user, $base_url;
+	$users = array();
+	$comments = _ywp_misc_get_comments($node);
+	
+	/*
+	if ($node->type == 'challenge') {
+		$node->field_from_workshop['und'][0]['value'] = 1;
+		field_attach_update('node', $node);
+	} */
+  
+  foreach ($comments as $comment) {
+	  if (!in_array($comment->uid, $users)){
+		  $users[] = $comment->uid;
+	  }
+  }
+  
+  /*
+  foreach ($users as $u) {
+	  $data = user_load($u);
+	  if (isset($data->field_update_notify['und'])) {
+		  if ($data->field_update_notify['und'][0]['value'] == '1') {
+			  $author = user_load($node->uid);
+	      drupal_mail(
+	      	'ywp_misc', 
+	      	'node_update', 
+	      	$data->mail, 
+	      	language_default(), 
+	      	$params = array(
+		      	'user_first_name' => $data->field_firstname['und'][0]['value'],
+		      	'user_last_name' => $data->field_last_name['und'][0]['value'],
+		      	'user_link' => $base_url.'/user/'.$data->uid,
+		      	'author_first_name' => $author->field_firstname['und'][0]['value'],
+		      	'author_last_name' => $author->field_last_name['und'][0]['value'],
+		      	'author_link' => $base_url.'/user/'.$author->uid,
+		      	'node_title' => $node->title,
+	      		'node_url' => $base_url.'/node/'.$node->nid
+	      	), 
+	      	variable_get('site_mail', '')
+	      );
+	    }
+	  }
+  }
+  */
+} 
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function ywp_misc_field_formatter_info() {
+  return array(
+    'oyster_slideshow' => array( //Machine name of the formatter
+      'label' => t('Oyster Slideshow'),
+      'field types' => array('image'), //This will only be available to text fields
+      'settings' => array(
+        'image_style' => '',
+      ),
+    ),
+  );
+}	
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function ywp_misc_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+	$display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $image_styles = image_style_options();
+  
+  $element['image_style'] = array(
+    '#title' => t('Image style'),
+    '#type' => 'select',
+    '#options' => $image_styles,
+    '#default_value' => $settings['image_style'],
+    '#empty_option' => t('None (original image)'),
+    '#description' => t('Select the image style to use.'),
+  );
+  
+  return $element;
+  
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function ywp_misc_field_formatter_settings_summary($field, $instance, $view_mode) {
+	$display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $summary = array();
+  $image_styles = image_style_options(FALSE);
+  
+  $select_style = $settings['image_style'];
+
+  if (isset($image_styles[$select_style])) {
+    $summary[] = t('Image style: @style', array('@style' => $image_styles[$select_style]));
+  }
+  else {
+    $summary[] = t('Original image URL');
+  }
+  
+  return implode('<br />', $summary);
+	
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function ywp_misc_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+	$element = array();
+  $settings = $display['settings'];
+  
+  if (empty($items)) {
+	  return $element;
+  }
+  
+  
+  
+  foreach ($items as $delta => $item) {
+    $image_url = file_create_url($item['uri']);
+    if (!empty($settings['image_style'])) {
+      $image_url = image_style_url($settings['image_style'], $item['uri']);
+    }
+    $item['slide_image'] = $image_url;
+    $items[$delta] = $item;
+  }
+  
+  
+  
+  $element[0] = array(
+    '#theme' => 'oyster_slider',
+    '#items' => $items,
+  );
+
+  return $element;
+}
+
+function theme_oyster_slides(&$variables) {
+	$output = '';
+	$items = $variables['items'];
+	
+	foreach ($items as $item) {
+	  $output .= '<div class="item"><img src="'.$item['slide_image'].'"></div>';
+	}
+	
+	return $output;
+}
+
+/**
+ * Implements hook_block_info.
+ */
+function ywp_misc_block_info() {
+	$blocks['ywp_misc_pagination'] = array(
+    'info' => t('YWP Pagination'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view.
+ */
+function ywp_misc_block_view($delta = '') {
+  switch ($delta) {
+	  case 'ywp_misc_pagination':
+	    $block['content'] = array(
+		    '#markup' => ywp_misc_pagination_block_content(),
+		  );  
+	  break;
+	}
+	return $block;
+}
+
+/**
+ * Pagination function().
+ */
+function ywp_misc_pagination($node, $mode = 'n') {
+	if (!$node->status) {
+    return NULL;
+  }
+  $query = new EntityFieldQuery();
+	$query
+    ->entityCondition('entity_type', 'node')
+    ->propertyCondition('status', 1)
+    ->entityCondition('bundle', $node->type);
+  $result = $query->execute();
+  $nids = array_keys($result['node']);
+  
+  while ($node->nid != current($nids)) {
+    next($nids);
+  }
+  
+  switch($mode) {
+    case 'p':
+      prev($nids);
+    break;
+		
+    case 'n':
+      next($nids);
+    break;
+		
+    default:
+    return NULL;
+  }
+  
+  return current($nids);
+}
+
+function ywp_misc_pagination_block_content() {
+	$node = menu_get_object();
+	
+	$output = '<div class="prev_next_links">';
+  if (ywp_misc_pagination($node, 'p') != NULL)  {
+	  $output .= '<div class="fleft"><a href="'.url('node/' . ywp_misc_pagination($node, 'p'), array('absolute' => TRUE)).'">'.t('Previous Post').'</a></div>';
+  }
+  if (ywp_misc_pagination($node, 'n') != NULL)  {
+	  $output .= '<div class="fright"><a href="'.url('node/' . ywp_misc_pagination($node, 'n'), array('absolute' => TRUE)).'">'.t('Next Post').'</a></div>';
+  }
+	$output .= '</div>';
+	return $output;
+}
+
+/**
+ * Clears page cache for a given internal path.
+ *
+ * @param string $path
+ *   Internal path to clear cache of.
+ * @param string $langcode
+ *   Language code of the url.
+ */
+function ywp_misc_clear_page_cache($path, $langcode = null) {
+  $url_options = array('absolute' => TRUE);
+  if (empty($langcode)) {
+    $langcode = 'en';
+  }
+  $url_options['language'] = (object) array(
+    'language' => $langcode,
+  );
+  if ($langcode != 'en') {
+    $url_options['base_url'] = $GLOBALS['base_url'] . '/' . $langcode;
+  }
+  $cid = url($path, $url_options);
+  cache_clear_all($cid, 'cache_page');
+}
+
+/**
+ * Debugs $data using watchdog().
+ *
+ * @param mixed $data
+ *   Arbitrary data to be logged.
+ * @param string $type
+ *   Log type. Defaults to 'debug'.
+ */
+function ywp_debug($data, $type = 'debug') {
+  watchdog($type, '<pre>' . print_r($data, TRUE) . '</pre>', array(), WATCHDOG_DEBUG);
+}
+
+/**
+ * Logs error using watchdog().
+ *
+ * @param string $message
+ *   Error message. Placeholder "%error" will be replaced with actual error
+ *   message.
+ * @param \Exception $e
+ *   Error to be logged.
+ * @param string $type
+ *   Log type. Defaults to 'ywp'.
+ */
+function ywp_log_error($message, Exception $e, $type = 'ywp') {
+  watchdog($type, $message, array('%error' => $e->getMessage()), WATCHDOG_ERROR);
+}
+
+/**
+ * Prepares variables for "html" templates.
+ *
+ * @param array $variables
+ */
+function ywp_misc_preprocess_html(&$variables) {
+  if (path_is_admin(current_path())) {
+    $path = drupal_get_path('module', 'ywp_misc');
+    drupal_add_css($path . '/css/admin.css');
+  }
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function ywp_misc_libraries_info() {
+
+  $libraries = array();
+
+  $libraries['owl.carousel'] = array(
+    'name' => 'Owl Carousel 2',
+    'vendor url' => 'https://owlcarousel2.github.io/OwlCarousel2/',
+    'download url' => 'https://github.com/OwlCarousel2/OwlCarousel2/archive/2.3.4.zip',
+    'version' => '2.3.4',
+    'files' => array(
+      'js' => array(
+        'owl.carousel.min.js',
+      ),
+      'css' => array(
+        'assets/owl.carousel.min.css',
+      ),
+    ),
+    'variants' => array(
+      'js' => array(
+        'files' => array(
+          'js' => array(
+            'owl.carousel.min.js',
+          ),
+        ),
+      ),
+      'default' => array(
+        'files' => array(
+          'js' => array(
+            'owl.carousel.min.js',
+          ),
+          'css' => array(
+            'assets/owl.carousel.min.css',
+            'assets/owl.theme.default.min.css',
+          ),
+        ),
+      ),
+      'green' => array(
+        'files' => array(
+          'js' => array(
+            'owl.carousel.min.js',
+          ),
+          'css' => array(
+            'assets/owl.carousel.min.css',
+            'assets/owl.theme.green.min.css',
+          ),
+        ),
+      ),
+    ),
+  );
+
+  $libraries['malihu-custom-scrollbar'] = array(
+    'name' => 'jQuery custom content scroller',
+    'vendor url' => 'http://manos.malihu.gr/jquery-custom-content-scroller/',
+    'download url' => 'https://github.com/malihu/malihu-custom-scrollbar-plugin/archive/master.zip',
+    'version' => '3.1.5',
+    'files' => array(
+      'js' => array(
+        'jquery.mCustomScrollbar.concat.min.js',
+      ),
+      'css' => array(
+        'jquery.mCustomScrollbar.min.css',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_wysiwyg_plugin().
+ *
+ * @param string $editor
+ * @param string $version
+ *
+ * @return array
+ */
+function ywp_misc_wysiwyg_plugin($editor, $version) {
+  if ($editor == 'ckeditor') {
+    return array(
+      'wordcount' => array(
+        'name' => 'wordcount',
+        'extensions' => array(
+          'wordcount' => t('Plugin to add word/character counter.'),
+        ),
+        'load' => TRUE,
+        'internal' => TRUE,
+      ),
+    );
+  }
+}

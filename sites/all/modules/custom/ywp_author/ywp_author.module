@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function ywp_author_theme() {
+	return array(
+		'about_the_author' => array(
+      'template' => 'tpl/about-the-author',
+      'variables' => array('author' => NULL, 'picture' => NULL, 'path' => NULL),
+    ),
+	);
+}
+
+/**
+ * Returns HTML list of five most recent nodes "loved" by author.
+ */
+function ywp_author_get_loves($uid) {
+	global $base_url;
+	$count = 0;
+	$nodes = array();
+	
+	$loves = flag_get_user_flags('node', null, $uid, null);
+	if (isset($loves['loves'])) {
+		$loves = $loves['loves']; 
+		$loves = array_reverse($loves); // reverse order to get most recent first
+		$output = "<ul>";
+		
+		foreach ($loves as $love) {
+			if ($count == 5) {
+				break;
+			}
+			$nodes[] = node_load($love->entity_id);
+			$count++;
+		}
+		
+		foreach ($nodes as $node) {
+			$output .= '<li><a href="'.$base_url.'/node/'.$node->nid.'">'.$node->title.'</a></li>';
+		}
+		$output .= "</ul>";
+	}
+	else {
+		$output = "Author has not loved anything.";
+	}
+	
+	return $output;
+}
+
+/**
+ * Returns HTML list of five most recent comments by author.
+ */
+function ywp_author_get_comments($uid) {
+	global $base_url;
+	$count = 0;
+	
+	$results = db_select('comment')
+	  ->fields('comment', array('nid','cid'))
+	  ->condition('uid', $uid, '=')
+	  ->execute()
+	  ->fetchAll();
+	
+	$results = array_reverse($results);  
+	
+	if (!empty($results)) {
+		$comments = array();
+		$output = "<ul>";
+		
+		foreach ($results as $result) {
+			if ($count == 5) {
+				break;
+			}
+			$comments[] = comment_load($result->cid);
+			$count++;
+		}
+
+		foreach ($comments as $comment) {
+			$output .= '<li><a href="'.$base_url.'/comment/'.$comment->cid.'#comment-'.$comment->cid.'">'.$comment->subject.'</a></li>';
+			
+		}
+		$output .= "</ul>";
+	}
+	else {
+		$output = "Author has not made any comments.";
+	}
+
+	return $output;
+}

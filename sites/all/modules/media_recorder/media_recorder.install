@@ -1,0 +1,146 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the media_recorder module.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function media_recorder_requirements($phase) {
+  $requirements = array();
+
+  // Check requirements during the runtime phase.
+  if ($phase == 'runtime') {
+    $t = get_t();
+
+    // Check that all libraries exist.
+    $required_libraries = array(
+      'swfobject',
+      'FlashWavRecorder',
+      'Recorderjs',
+    );
+    foreach ($required_libraries as $name) {
+      $library = libraries_detect($name);
+      if ($library['installed']) {
+        $requirements['media_recorder_' . $name] = array(
+          'title' => $t('Media Recorder: %library', array('%library' => $library['name'])),
+          'value' => $t('Installed %version', array('%version' => $library['version'])),
+          'severity' => REQUIREMENT_OK,
+        );
+      }
+      else {
+        $requirements['media_recorder_' . $name] = array(
+          'title' => $t('Media Recorder: %library', array('%library' => $library['name'])),
+          'value' => $t('Not installed'),
+          'description' => $library['error message'],
+          'severity' => REQUIREMENT_ERROR,
+        );
+      }
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_enable().
+ */
+function media_recorder_enable() {
+
+  // Check that all libraries exist.
+  $required_libraries = array(
+    'swfobject',
+    'FlashWavRecorder',
+    'Recorderjs',
+  );
+  foreach ($required_libraries as $name) {
+    $library = libraries_detect($name);
+    if (!$library['installed']) {
+      $drush_msg = t('You can use the drush command "drush mrdl" to automatically install all required libraries.');
+      drupal_set_message($library['error message'] . ' ' . $drush_msg, 'error');
+    }
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function media_recorder_uninstall() {
+  variable_del('media_recorder');
+}
+
+/**
+ * Moves all setting variables into one variable.
+ */
+function media_recorder_update_7200(&$sandbox) {
+  $settings = array(
+    'constraints' => array(
+      'audio' => TRUE,
+      'video' => TRUE,
+      'video_resolution' => 320,
+    ),
+    'css' => TRUE,
+    'time_limit' => 300,
+    'allowed_extensions' => 'wav mp3 m4a ogg oga weba wma mov mp4 wmv m4v mpeg avi ogv webp webm',
+    'upload_directory' => 300,
+    'kaltura' => array(
+      'enable' => FALSE,
+      'server' => 0,
+      'recorder' => 0,
+    ),
+  );
+
+  $media_recorder_constraints = variable_get('media_recorder_constraints', '');
+  $media_recorder_css = variable_get('media_recorder_css', '');
+  $media_recorder_time_limit = variable_get('media_recorder_time_limit', '');
+  $media_recorder_default_allowed_extensions = variable_get('media_recorder_default_allowed_extensions', '');
+  $media_recorder_upload_directory = variable_get('media_recorder_upload_directory', '');
+  variable_del('media_recorder_constraints');
+  variable_del('media_recorder_css');
+  variable_del('media_recorder_time_limit');
+  variable_del('media_recorder_default_allowed_extensions');
+  variable_del('media_recorder_upload_directory');
+  variable_del('media_recorder_width');
+  variable_del('media_recorder_height');
+  variable_del('media_recorder_timelimit');
+
+  if (!empty($media_recorder_constraints)) {
+    $settings['constraints'] = $media_recorder_constraints;
+  }
+  if (!empty($media_recorder_css)) {
+    $settings['css'] = $media_recorder_css;
+  }
+  if (!empty($media_recorder_time_limit)) {
+    $settings['time_limit'] = $media_recorder_time_limit;
+  }
+  if (!empty($media_recorder_default_allowed_extensions)) {
+    $settings['allowed_extensions'] = $media_recorder_default_allowed_extensions;
+  }
+  if (!empty($media_recorder_upload_directory)) {
+    $settings['upload_directory'] = $media_recorder_upload_directory;
+  }
+
+  variable_set('media_recorder', $settings);
+}
+
+/**
+ * Updates admin settings to new constraints format.
+ */
+function media_recorder_update_7201(&$sandbox) {
+  $settings = media_recorder_get_settings();
+  $settings['constraints']['video_width'] = array(
+    'min' => 640,
+    'ideal' => 1280,
+    'max' => 1920,
+  );
+  $settings['constraints']['video_height'] = array(
+    'min' => 480,
+    'ideal' => 720,
+    'max' => 1080,
+  );
+  if (isset($settings['constraints']['video_resolution'])) {
+    unset($settings['constraints']['video_resolution']);
+  }
+  variable_set('media_recorder', $settings);
+}
