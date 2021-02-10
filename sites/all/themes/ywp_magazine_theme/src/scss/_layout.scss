@@ -1,0 +1,151 @@
+/**
+ * General page layout.
+ */
+
+html {
+  height: 100%;
+  position: relative;
+}
+
+body {
+  @include absolute-cover();
+  overflow: hidden;
+
+  &.page-magazine--inner {
+    .navbar {
+      border-bottom: 1px solid $gray-800;
+    }
+  }
+}
+
+.layout-wrapper {
+  @include absolute-cover();
+  width: 100%;
+}
+
+.navbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+
+  .logo-front {
+    max-width: 70%;
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  .logo-thevoice {
+    margin: 0 auto;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+  padding: $navbar-padding-y $navbar-padding-x;
+  overflow-x: hidden;
+  overflow-y: auto;
+  @include gradient-y-three-colors($gray-700, $gray-700, 80%, $gray-900);
+  color: $white;
+
+  .navbar-toggler {
+    float: right;
+
+    .navbar-toggler-icon {
+      @include close-icon($white);
+    }
+  }
+}
+
+.content-wrapper {
+
+  /*
+  .region-sidebar {
+    padding: map-get($spacers, 2);
+    background: rgba(0, 0, 0, 0.8);
+    color: $white;
+    text-transform: uppercase;
+  }
+  */
+}
+
+@include media-breakpoint-up(md) {
+
+  .content-wrapper {
+    position: relative;
+
+    /*
+    .region-sidebar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 1;
+
+      .sidebar-toggler {
+        position: absolute;
+        top: 0;
+        right: 0;
+        @include translateX(100%);
+        display: block;
+        width: 2 * $spacer;
+        height: 2 * $spacer;
+        line-height: 2 * $spacer;
+        background: rgba(0, 0, 0, 0.8);
+        @include border-right-radius($spacer);
+        color: $white;
+        text-align: center;
+        text-decoration: none;
+
+        .fas {
+          line-height: 2 * $spacer;
+        }
+
+        .icon-left {
+          display: none;
+        }
+
+        .icon-right {
+          display: block;
+        }
+      }
+
+      @include translateX(-100%);
+
+      -webkit-transition: -webkit-transform 0.3s ease-in;
+      -moz-transition: -moz-transform 0.3s ease-in;
+      -o-transition: -o-transform 0.3s ease-in;
+      transition: transform 0.3s ease-in;
+
+      &.open {
+        @include translateX(0);
+
+        .sidebar-toggler {
+
+          .icon-left {
+            display: block;
+          }
+
+          .icon-right {
+            display: none;
+          }
+        }
+      }
+    }
+    */
+
+
+    .region-content {
+      @include absolute-cover();
+    }
+  }
+
+}

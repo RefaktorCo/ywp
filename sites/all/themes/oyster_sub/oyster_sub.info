@@ -1,0 +1,49 @@
+name = Oyster sub
+description = A sub-theme of Oyster. 
+core = 7.x
+engine = phptemplate
+
+base theme = oyster
+
+; Call style sheets.
+stylesheets[all][] = css/font-awesome/css/font-awesome.min.css
+stylesheets[all][] = css/custom.css
+stylesheets[all][] = css/updates.css
+
+; Define theme JS libraries.
+scripts[] = js/accordion.js
+scripts[] = js/carousel.js
+
+; Define theme block regions.
+regions[header_branding] = Header Branding
+regions[header_top_menu] = Header Top Menu
+regions[header_menu] = Header Menu
+regions[fullscreen] = Fullscreen
+regions[content] = Content
+regions[xp_content] = XP Content
+regions[right_sidebar] = Right Sidebar
+regions[left_sidebar] = Left Sidebar
+regions[playlist_sidebar] = Playlist Sidebar
+regions[after_content] = After Content
+regions[footer_top] = Footer Top
+regions[footer_bottom] = Footer Bottom
+
+
+; Panels Module layouts
+plugins[panels][layouts] = layouts/panels
+
+; Define theme setting defaults.
+settings[sticky_header] = 1
+settings[header_search] = 1
+
+settings[portfolio_meta_author] = 1
+settings[portfolio_meta_date] = 1
+settings[portfolio_meta_comments] = 1
+settings[portfolio_meta_title] = 1
+settings[portfolio_meta_share] = 1
+
+settings[article_meta_author] = 1
+settings[article_meta_date] = 1
+settings[article_meta_comments] = 1
+settings[article_meta_title] = 1
+settings[article_meta_share] = 1

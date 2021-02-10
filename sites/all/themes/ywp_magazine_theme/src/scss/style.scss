@@ -1,0 +1,29 @@
+/**
+ * Main style hub file.
+ */
+
+// Bootstrap functions are required for variables.
+@import "../../node_modules/bootstrap/scss/functions";
+
+// Bootstrap variables.
+@import "bootstrap";
+
+// Default Bootstrap styles.
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+// Site specific variables.
+@import "variables";
+
+// Custom mixins.
+@import "mixins";
+
+// FontAwesome
+@import "fontawesome/fontawesome";
+
+// OwlCarousel
+@import "owl.carousel/owl.carousel";
+
+// Custom theme styles.
+@import "layout";
+@import "components/*";
+@import "content/*";

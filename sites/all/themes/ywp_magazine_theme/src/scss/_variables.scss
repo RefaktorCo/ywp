@@ -1,0 +1,13 @@
+/**
+ * Site specific variables.
+ */
+
+$page_teaser_size: 160px;
+$page_teaser_media_size: 120px;
+$page_teaser_radius: $page_teaser_size / 2;
+$page_teaser_padding: ($page_teaser_size - $page_teaser_media_size) / 2;
+$page_teaser_border_width: 4px;
+$page_teaser_content_size: $page_teaser_size - 2 * $page_teaser_border_width;
+
+$page_full_padding: 4rem;
+$page_full_nav_size: 44px;

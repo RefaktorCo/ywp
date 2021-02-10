@@ -1,0 +1,141 @@
+/*=======================================================================
+*** OYSTER_SUB STYLE UPDATES***
+========================================================================*/
+
+body{
+  background: #fff;
+
+}
+.logo_sect-wrapp{
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+.logo_sect{
+  padding: 30px 0 0 0;
+}
+.logo_def {
+  max-width: 300px;
+}
+
+/*
+** HEADER
+*/
+.header-menus-wrapp{
+  position: relative;
+  z-index: 2;
+}
+.header_top_nav{
+  margin-top: -30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+}
+.header_rp{
+  width: 100%;
+}
+.header_search{
+  right: 130px;
+  top: -2px;
+}
+.header_search form{
+  margin-top: 0;
+
+}
+.search_on .header_search{
+  opacity: 1;
+
+}
+
+.header_top_nav .search_toggler{
+  position: relative;
+  margin: 0;
+  top: 1px;
+  right: 0;
+  margin: 0 10px;
+  height: 22px;
+  background: none;
+}
+#block-system-user-menu a[href="/user"],
+#block-system-user-menu a[href^="/user/login"]{
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  width: 15px;
+  height: 18px;
+  top: 2px;
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+#block-system-user-menu a[href="/user"]:before,
+#block-system-user-menu a[href^="/user/login"]:before{
+  content: "\f007";
+  font-size: 18px;
+
+  position: absolute;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+#block-system-user-menu ul.menu{
+  list-style: none;
+  display: flex;
+}
+#block-system-user-menu ul.menu li{
+  list-style: none;
+}
+.region-header-menu{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.main_header nav ul.menu{
+  margin-right: 0;
+}
+.main_header nav ul.menu>li{
+  margin: 0 10px;
+}
+
+
+.pane-block-48 .media img{
+  width: 100%;
+}
+
+#content{
+  padding: 0 40px;
+}
+
+
+.views-field-field-show-on-frontpage label{
+  display: none;
+}
+
+
+/*
+** Footer
+*/
+#footer-top{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+#footer-bottom{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}

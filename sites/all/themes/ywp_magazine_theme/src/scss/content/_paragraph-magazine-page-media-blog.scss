@@ -1,0 +1,77 @@
+/**
+ * Paragraph of type Media Blog.
+ */
+
+.paragraphs-item-magazine-page-media-blog {
+
+  &.view-mode-full {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .field-name-field-media-author {
+      text-align: center;
+      font-style: italic;
+      padding: $badge-padding-y $badge-padding-x;
+      /*
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: $black;
+      color: $white;
+
+      a {
+        color: $white;
+      }
+      */
+    }
+
+    .field-name-field-image {
+      img {
+        @include img-fluid();
+        width: auto;
+        margin: 0 auto;
+        display: block;
+      }
+    }
+
+    .field-name-field-media-embed {
+
+      .fluid-width-video-wrapper {
+        // @todo
+      }
+    }
+
+    .field-name-field-audio-upload,
+    .field-name-field-audio-record {
+      audio {
+        display: block;
+        margin: 1rem auto;
+      }
+    }
+
+    @include media-breakpoint-up(md) {
+
+      &.ywp-full-height {
+
+        .field-name-field-audio-upload,
+        .field-name-field-audio-record {
+          position: absolute;
+          bottom: 3rem;
+          left: 0;
+          right: 0;
+          width: 100%;
+        }
+      }
+    }
+
+    @include media-breakpoint-down(sm) {
+
+      .field-name-field-audio-upload,
+      .field-name-field-audio-record {
+        padding: 4rem 0;
+      }
+    }
+  } // Full view mode.
+
+}

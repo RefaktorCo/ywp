@@ -1,0 +1,15 @@
+.span4 {
+	width: 33.3%;
+	display: inline-block;
+	float: left;
+}
+
+.span8 {
+	width: 66.6%;
+	display: inline-block;
+	float: left;
+}
+
+.panel-region-after_content {
+	clear: both;
+}

@@ -1,0 +1,30 @@
+/**
+ * Dialog that shows magazine page.
+ */
+
+.mfp-wrap.magazine-page-popup {
+  .mfp-container {
+    padding: 0;
+
+    .mfp-content {
+      @include absolute-cover();
+
+      .mfp-ajax-content-wrapper {
+        @include absolute-cover();
+
+        #mfp-ajax-content {
+          @include absolute-cover;
+          background: #fff url(../images/icons/ajax-loader-small.gif) no-repeat center center;
+        }
+
+        .entity-paragraphs-item.paragraphs-item-magazine-page.view-mode-full {
+          @include absolute-cover();
+        }
+
+        .mfp-close {
+          right: $spacer;
+        }
+      }
+    }
+  }
+}

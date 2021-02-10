@@ -1,0 +1,16 @@
+.span3 {
+	width: 25%;
+	display: inline-block;
+	float: left;
+}
+
+.span6 {
+	width: 50%;
+	display: inline-block;
+	float: left;
+}
+
+
+.panel-region-after_content {
+	clear: both;
+}

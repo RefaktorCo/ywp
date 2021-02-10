@@ -1,0 +1,70 @@
+/**
+ * @file
+ * Magazine TOC.
+ */
+
+.magazine-toc {
+
+  &.view-mode-full {
+
+    .toc-content {
+      padding: 2rem;
+
+      .paragraphs-item-magazine-page {
+        margin-bottom: $spacer;
+
+        .magazine-page-media {
+          display: block;
+          width: 60px;
+          height: 60px;
+          padding: 3px;
+          position: relative;
+          border: 1px solid $gray-400;
+          @include border-radius(50%);
+          color: $body-color;
+
+          .icon {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            @include translate(-50%, -50%);
+          }
+
+          img {
+            @include img-fluid;
+            @include border-radius(50%);
+          }
+        }
+
+        .media-body {
+          padding-top: .25rem;
+        }
+
+        .title {
+          margin-bottom: .25rem;
+        }
+
+        .author {
+          color: $gray-700;
+          font-size: $font-size-sm;
+        }
+      }
+    }
+
+    .toc-media {
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position-x: right;
+    }
+
+    @include media-breakpoint-up(md) {
+      @include absolute-cover;
+
+      .toc-content {
+        padding: 3rem;
+        height: 100%;
+        overflow-y: auto;
+      }
+    }
+  }
+}

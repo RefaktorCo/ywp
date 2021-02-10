@@ -1,0 +1,10 @@
+name = YWP: Magazine
+description = Theme to be used with YWP Magazine.
+core = 7.x
+
+stylesheets[all][] = assets/css/style.css
+scripts[] = assets/js/bootstrap.js
+scripts[] = assets/js/script.js
+
+regions[menu] = Menu
+regions[content] = Content

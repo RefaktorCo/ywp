@@ -1,0 +1,155 @@
+/**
+ * Node of type Magazine.
+ */
+
+.node-magazine {
+
+  &.view-mode-full {
+    @include absolute-cover();
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    .logo-thevoice-overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      @include gradient-x-three-colors(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.8), 60%, rgba(0, 0, 0, 0));
+
+      .logo-thevoice-wrapper {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        @include translateY(-100%);
+        text-align: center;
+        color: $white;
+
+        .logo-thevoice {
+          max-width: 80%;
+          height: auto;
+        }
+
+        .issue-number {
+          margin: $spacer 0;
+          font-weight: bold;
+          color: $gray-600;
+        }
+      }
+    }
+
+    .paragraphs-items-field-magazine-pages {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 40px;
+
+      > .field {
+        > .field-items {
+          height: $page_teaser_size;
+          max-width: 100%;
+          overflow-x: auto;
+          white-space: nowrap;
+          position: relative;
+
+          > .field-item,
+          .mCSB_container > .field-item {
+            display: inline-block;
+            overflow: hidden;
+            white-space: normal;
+
+            &:after {
+              display: table-cell;
+              content: ' ';
+              width: 21px;
+              background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='3'><path d='M0 1 l24 0' stroke='white' stroke-width='1.2' stroke-dasharray='4,3' /></svg>") no-repeat center;
+            }
+
+            &:first-child:before {
+              display: table-cell;
+              content: ' ';
+              width: 21px;
+              background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='3'><path d='M0 1 l24 0' stroke='white' stroke-width='1.2' stroke-dasharray='4,3' /></svg>") no-repeat center;
+            }
+
+            &.odd {
+              .outline {
+                bottom: 0;
+                background-position: left bottom;
+              }
+            }
+
+            article {
+              display: table-cell;
+            }
+          }
+        }
+      }
+    }
+
+    @include media-breakpoint-up(md) {
+
+      .logo-thevoice-overlay {
+        width: 60%;
+        min-width: map-get($grid-breakpoints, md);
+        @include gradient-x-three-colors(rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.9), 80%, rgba(0, 0, 0, 0));
+      }
+
+      .paragraphs-items-field-magazine-pages {
+        > .field {
+          > .field-items {
+            > .field-item,
+            .mCSB_container > .field-item {
+
+              &:first-child:before {
+                display: table-cell;
+                content: ' ';
+                width: 120px;
+                background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='3'><path d='M0 1 l120 0' stroke='white' stroke-width='1.2' stroke-dasharray='4,3' /></svg>") no-repeat center;
+              }
+
+              &:last-child:after {
+                width: 120px;
+                background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='3'><path d='M0 1 l120 0' stroke='white' stroke-width='1.2' stroke-dasharray='4,3' /></svg>") no-repeat center;
+              }
+            }
+          }
+        }
+      }
+    }
+  } // Full view mode.
+
+  &.view-mode-teaser {
+    position: relative;
+    min-width: 100px;
+
+    .issue-number {
+      @include absolute-cover();
+      display: none;
+      color: $white;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.8);
+      text-decoration: none;
+      font-size: $font-size-sm;
+
+      .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        @include translate(-50%, -50%);
+      }
+    }
+
+    &:hover {
+      .issue-number {
+        display: block;
+      }
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  } // Teaser view mode.
+}

@@ -1,0 +1,32 @@
+/**
+ * @file
+ * YWP: Magazine: Issues view.
+ */
+
+.view-ywp-magazine-issues {
+
+  .view-content {
+    > h3 {
+      margin-top: 1.5 * $spacer;
+      margin-bottom: $spacer;
+      padding-top: 1.5 * $spacer;
+      font-size: $h6-font-size;
+      text-align: center;
+      border-top: 1px solid $gray-300;
+    }
+  }
+
+  .row {
+    margin-bottom: $spacer;
+  }
+}
+
+.block-views-ywp-magazine-issues-block {
+  .block-title {
+    margin-bottom: 0;
+    padding: $navbar-toggler-padding-y 0;
+    line-height: 1.5em;
+    font-size: $navbar-toggler-font-size;
+    font-weight: normal;
+  }
+}

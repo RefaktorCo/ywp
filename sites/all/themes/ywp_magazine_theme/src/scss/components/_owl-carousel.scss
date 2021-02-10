@@ -1,0 +1,73 @@
+/**
+ * Owl Carousel general styles.
+ */
+
+.owl-carousel {
+
+  .owl-stage-outer {
+    padding-bottom: 3.6rem;
+  }
+
+  .owl-nav {
+    position: absolute;
+    left: 1.5rem;
+    right: 1.5rem;
+    bottom: 1rem;
+
+    button {
+      span {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        border: solid $gray-800;
+        border-width: 0 1px 1px 0;
+        vertical-align: middle;
+        color: transparent;
+      }
+    }
+
+    .owl-next {
+      float: right;
+
+      span {
+        @include transform(rotate(-45deg));
+      }
+    }
+
+    .owl-prev {
+      float: left;
+
+      span {
+        @include transform(rotate(135deg));
+      }
+    }
+  }
+
+  .owl-dots {
+    position: absolute;
+    bottom: .9rem;
+    left: 50%;
+    @include translateX(-50%);
+
+    .owl-dot {
+      margin: 0 5px;
+
+      span {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        @include transition(background .2s ease);
+        @include border-radius(50%);
+        border: 1px solid $gray-800;
+        background: none;
+      }
+
+      &.active {
+        span {
+          background-color: $gray-800;
+        }
+      }
+    }
+  }
+
+}

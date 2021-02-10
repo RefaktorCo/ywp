@@ -1,0 +1,28 @@
+/**
+ * Paragraph of type Custom Media.
+ */
+
+.paragraphs-item-magazine-page-media-custom {
+
+  &.view-mode-full {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .field-name-field-media-author {
+      text-align: center;
+      font-style: italic;
+      padding: $badge-padding-y $badge-padding-x;
+    }
+
+    .field-name-field-media-image {
+      img {
+        @include img-fluid();
+        width: auto;
+        margin: 0 auto;
+        display: block;
+      }
+    }
+  } // Full view mode.
+
+}
