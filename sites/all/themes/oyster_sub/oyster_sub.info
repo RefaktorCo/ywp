@@ -20,6 +20,7 @@ regions[header_top_menu] = Header Top Menu
 regions[header_menu] = Header Menu
 regions[fullscreen] = Fullscreen
 regions[content] = Content
+regions[content_front] = Content Front
 regions[xp_content] = XP Content
 regions[right_sidebar] = Right Sidebar
 regions[left_sidebar] = Left Sidebar

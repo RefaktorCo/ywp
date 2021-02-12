@@ -117,7 +117,11 @@ body{
   padding: 0 40px;
 }
 
-
+.block-views .view-header{
+  display: flex;
+  justify-content: flex-end;  
+  
+}
 .views-field-field-show-on-frontpage label{
   display: none;
 }
