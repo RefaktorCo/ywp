@@ -329,6 +329,14 @@ body{
 .pane-nodeblock-38758 h3.text-center{
   display: none;
 }
+
+
+
+#content-logos{
+  padding-bottom: 0 !important;
+}
+
+
 /*
 ** Footer
 */
