@@ -61,20 +61,10 @@
         
       </div>
       <div class="create-block--item span3">
-        <?php
-          $block1 = block_load('views', 'weekly_challenges-block_1');
-          $content1 = _block_get_renderable_array(_block_render_blocks(array($block1)));
-          $output1 = drupal_render($content1);
-          print $output1;
-        ?>
+
       </div>
       <div class="create-block--item span3">
-        <?php
-          $block2 = block_load('views', 'journalism_challenges-block_1');
-          $content2 = _block_get_renderable_array(_block_render_blocks(array($block2)));
-          $output2 = drupal_render($content2);
-          print $output2;
-        ?>
+   
       </div>
     </div>
 

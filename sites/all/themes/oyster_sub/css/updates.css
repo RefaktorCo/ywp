@@ -238,6 +238,9 @@ body{
 .view-news-and-events{
 
 }
+#content-11 .node--block h3.text-center{
+  display: none;
+}
 
 .content-bot .pane-title{
   display: none;
