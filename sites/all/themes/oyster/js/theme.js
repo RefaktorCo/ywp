@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
 	    }
 	    header.find('.header_wrapper').append('<a href="javascript:void(0)" class="menu_toggler"></a>');
 	    header.append('<div class="mobile_menu_wrapper"><ul class="mobile_menu container"/></div>');
-	    jQuery('.mobile_menu').html(header.find('.menu').html());
+	    jQuery('.mobile_menu').html(header.find('#menu-main-menu').html());
 	    jQuery('.mobile_menu_wrapper').hide();
 	    jQuery('.menu_toggler').click(function () {
 	        jQuery('.mobile_menu_wrapper').slideToggle(300);

@@ -184,6 +184,15 @@ body{
 }  
 }
 
+
+.mobile_menu{
+  list-style: none;
+}
+.mobile_menu ul{
+  list-style: none;
+}
+.mobile_menu .menu-item-has-children > a{ 
+}
 .front .view-content, .page-user .pane-content{
   box-sizing: border-box; 
 }

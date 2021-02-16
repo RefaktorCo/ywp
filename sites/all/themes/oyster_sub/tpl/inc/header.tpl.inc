@@ -68,17 +68,7 @@
 <?php print render($page['header_top_menu']); ?>
         </div>  
       </div> 
-      <div class="row">
-  <div class="header_rp mobile_menu_wrapper">
-          <nav>
-<?php if (isset($page['header_menu'])): ?> 
-              <div class="menu-main-menu-container">
-  <?php print render($page['header_menu']); ?>    	
-              </div>
-<?php endif; ?>
-          </nav>     
-        </div>
-</div>      </div>
+  </div>
     </div>
     <div class="clear"></div>
 
