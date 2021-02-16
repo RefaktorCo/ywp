@@ -95,7 +95,7 @@ function image_field_checkbox_get_image_fields($entity_type = NULL, $bundle = NU
   // TODO: As of Drupal 7.22 use field_info_field_map() instead of field_info_instances();
   $image_fields = array();
   $fields = field_info_field_map($entity_type, $bundle);
-  
+
 
   foreach ($fields as $field_name => $field) {
     // Skip any deleted and non image widget fields.
@@ -254,7 +254,7 @@ function image_field_checkbox_field_attach_update($entity_type, $entity) {
       $items = (array) $entity->{$field_name}[$langcode];
       $delta_count = 0;
       foreach ($items as $delta => $item) {
-       
+
        // if (empty($item['image_field_checkbox']['value'])) { continue; }
         // We now know we have someting to insert.
         $do_insert = TRUE;
@@ -267,7 +267,7 @@ function image_field_checkbox_field_attach_update($entity_type, $entity) {
           'language' => $langcode,
           'checkbox_value' => $item['image_field_checkbox']['value'] ? $item['image_field_checkbox']['value'] : 0,
         );
-        //drupal_set_message('<pre>'. print_r($item, true) .'</pre>');  
+        //drupal_set_message('<pre>'. print_r($item, true) .'</pre>');
         $query->values($record);
         if ($field['cardinality'] != FIELD_CARDINALITY_UNLIMITED && ++$delta_count == $field['cardinality']) {
           break;
@@ -378,10 +378,10 @@ function image_field_checkbox_field_diff_view_alter(&$values, $items, $context) 
  */
 function image_field_checkbox_menu() {
 
-  $items['settings/gallery-images'] = array(
+  $items['admin/gallery-images'] = array(
     'type' => MENU_NORMAL_ITEM,
-    'title' => t('Title'),
-    'description' => 'My custom and very special page',
+    'title' => t('Gallery images list'),
+    'description' => 'Gallery images list',
     'page callback' => 'image_field_checkbox_listing_page',
     'access callback' => 'user_access',
     'access arguments' => array('access content'),
@@ -424,25 +424,25 @@ foreach ($gallery as $id => $images) {
   $url = url('node/' . $id, $options);
   $images_styled = '';
   foreach ($images as $key => $image_id) {
-    $image = file_load($image_id); 
-    $image_styled= theme('image_style', 
+    $image = file_load($image_id);
+    $image_styled= theme('image_style',
       array(
-        'style_name' => 'thumbnail', 
-        'path' => $image->uri, 
+        'style_name' => '100x50',
+        'path' => $image->uri,
         'getsize' =>FALSE
       )
-    ); 
+    );
     $images_styled .= $image_styled . ' ';
 }
-  
-    
+
+
  $content .= "<tr>";
- 
+
   $content .="<td>$id</td>
           <td><a href='$url'>$node->title</a></td>
           <td>$images_styled</td>
           <td><a href='/node/$id/edit'>edit</a></td>";
-  
+
  $content .= "</tr>";
 }
 
@@ -458,7 +458,7 @@ $content .= "</tbody></table>";
 function image_field_checkbox_block_info() {
   // This example comes from node.module.
   $blocks['gallery_images'] = array(
-    'info' => t('Gallery'), 
+    'info' => t('Gallery'),
     'cache' => DRUPAL_NO_CACHE,
   );
   return $blocks;
@@ -471,7 +471,7 @@ function image_field_checkbox_block_view($delta = '') {
   $block = array();
   switch ($delta) {
     case 'gallery_images':
-      $block['subject'] = t('Gallery');
+      $block['subject'] = t('The Gallery');
       $block['content'] = gallery_images_block_view();
       break;
   }
@@ -482,22 +482,27 @@ function image_field_checkbox_block_view($delta = '') {
  * block view.
  */
 function gallery_images_block_view(){
+  global $user;
   $content = "<div class='gallery-wrap'>";
+  if (in_array('administrator', $user->roles)){
+    $content .= "<div class='view-header'><a href='/admin/gallery-images'>[Change]</a></div>";
+  }
+  $content .= "<div class='owl-carousel owl-theme'>";
   $result = db_query('SELECT bundle, entity_id, checkbox_value FROM {field_image_field_checkbox} WHERE checkbox_value = 1');
   foreach ($result as $record) {
-    $image = file_load($record->bundle); 
-    $image_styled= theme('image_style', 
+    $image = file_load($record->bundle);
+    $image_styled= theme('image_style',
       array(
-        'style_name' => 'oyster_node_slider', 
-        'path' => $image->uri, 
+        'style_name' => 'gallery',
+        'path' => $image->uri,
         'getsize' =>FALSE
       )
-    ); 
-    
-    $content .="<div class='gallery-item'><img src='".file_create_url($image->uri)."' alt='' /> </div>";
+    );
+
+    $content .="<div class='gallery-item'>$image_styled</div>";
   }
 
-  $content .= "</div";
+  $content .= "</div></div>";
   return $content;
 }
 

@@ -6,6 +6,9 @@ body{
   background: #fff;
   padding-top: 0 !important;
 }
+.text-center{
+  text-align: center;
+}
 .sticky_menu .main_header{
   position: relative;
 }
@@ -235,6 +238,11 @@ body{
 .view-news-and-events{
 
 }
+
+.content-bot .pane-title{
+  display: none;
+}
+
 
 .view-news-and-events .view-content{
   display: flex;

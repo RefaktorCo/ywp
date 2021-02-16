@@ -1,0 +1,5 @@
+name = Custom Oyster Things
+description = Different features for Oyster theme
+core = 7.x
+
+dependencies[] = views

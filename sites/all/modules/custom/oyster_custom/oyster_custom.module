@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * Code for the Oyster Features feature.
+ */
+/**
+ * Implement hook_theme().
+ */
+function oyster_custom_theme() {
+  $module_path = drupal_get_path('module', 'oyster_custom');
+
+  $base = array(
+    'file' => 'theme.inc',
+    'path' => "$module_path/theme",
+  );
+
+  return array(
+    'oyster_custom_create_block' => $base + array(
+      'render element' => 'element',
+      'template' => 'oyster_custom_create_block',
+    ),
+  );
+}
+
+include_once 'oyster_custom.create.inc';
+include_once 'oyster_custom.daily_reads.inc';
+

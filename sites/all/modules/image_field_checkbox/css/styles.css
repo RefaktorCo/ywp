@@ -2,7 +2,9 @@
 .image-widget{
   display: flex;
 }
-
+.gallery-wrap{
+  position: relative;
+}
 .image-widget .image-widget-data{
   display: flex;
   justify-content: flex-start;
