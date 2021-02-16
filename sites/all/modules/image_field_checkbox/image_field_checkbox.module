@@ -416,15 +416,19 @@ foreach ($result as $key => $item) {
 }
 
 ksort($gallery, SORT_NUMERIC);
-//print_r($gallery);
+
 foreach ($gallery as $id => $images) {
   print_r($record);
   $node = node_load($id);
   $options = array('absolute' => TRUE);
   $url = url('node/' . $id, $options);
   $images_styled = '';
+  
   foreach ($images as $key => $image_id) {
-    $image = file_load($image_id);
+    $image = file_load($image_id->bundle);
+    
+
+
     $image_styled= theme('image_style',
       array(
         'style_name' => '100x50',
