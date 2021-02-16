@@ -27,6 +27,8 @@
           $(this)
             .owlCarousel({
               margin:10,
+              nav: true,
+              dots: false,
               loop:true,
               items:4
             });

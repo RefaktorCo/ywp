@@ -336,13 +336,14 @@ body{
   padding-bottom: 0 !important;
 }
 
+#content-logos .owl-nav,
 .gallery-wrap .owl-nav{
   position: absolute;
   top: 41%;
   width: 100%;
 }
-#content-middle .gallery-wrap .owl-next,
-#content-middle .gallery-wrap .owl-prev{
+#page-content  .owl-next,
+#page-content  .owl-prev{
   position: absolute;
   z-index: 10;
   font-size: 60px;
@@ -353,16 +354,22 @@ body{
   -o-transition: all 300ms ease-in-out;
   transition: all 300ms ease-in-out;
 }
+#content-logos .owl-prev,
 .gallery-wrap .owl-prev{
   left: -30px;
 }
+#content-logos .owl-next,
 .gallery-wrap .owl-next{
   right: -31px
 }
-#content-middle .gallery-wrap .owl-next:hover,
-#content-middle .gallery-wrap .owl-prev:hover{
+#page-content .owl-next:hover,
+#page-content .owl-prev:hover{
   background: none !important;
   color: #000;
+}
+.view-thanks-for-all-your-support- .view-content{
+  padding: 20px 40px;
+  min-height: 85px;
 }
 /*
 ** Footer

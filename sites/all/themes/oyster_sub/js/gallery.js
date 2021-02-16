@@ -26,16 +26,18 @@
             });
         });
 
-      $('.view-thanks-for-all-your-support- .owl-carousel', context)
-          .each(function () {
-            $(this)
-                .owlCarousel({
-                  margin:10,
-                  loop:true,
-                  autoWidth:true,
-                  items:4
-                });
-          });
+//      $('.view-thanks-for-all-your-support- .owl-carousel', context)
+//          .each(function () {
+//            $(this)
+//                .owlCarousel({
+//                  margin:10,
+//                  loop:true,
+//                  nav: true,
+//                  dots: false,
+//                  autoWidth:true,
+//                  items:4
+//                });
+//          });
     }
   }
 
