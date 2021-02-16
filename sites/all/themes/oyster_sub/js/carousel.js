@@ -29,7 +29,8 @@
               margin:10,
               nav: true,
               dots: false,
-              loop:true,
+              autoWidth:true,
+              loop:false,
               items:4
             });
         });

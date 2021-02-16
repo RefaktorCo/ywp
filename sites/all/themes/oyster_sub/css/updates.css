@@ -46,16 +46,42 @@ body{
   position: relative;
   z-index: 2;
 }
+.menu_toggler{
+  z-index: 100;
+}
 .header_top_nav{
-  margin-top: -35px;
+  
   display: flex;
   justify-content: flex-end;
   align-items: center;
   position: relative;
 }
+@media(min-width:991px){
+  margin-top: -35px;
+}
+@media(max-width:768px){
+  .logo img{
+    max-height: 160px;
+  }
+}
+
 .header_rp{
   width: 100%;
 }
+
+@media(max-width:768px){
+ .header_top_nav,
+  .main_header.desktop{
+  display: none;
+}
+}
+@media(min-width:769px){
+   
+  .main_header.movile{
+  display: none;
+}
+}
+
 .header_search{
   right: 130px;
   top: -2px;
@@ -149,8 +175,17 @@ body{
 }
 
 #panels-ipe-display-panel-context-page-front-page-front-panel .pane-content img{
+  width: 100%;
+}
+@media(min-width:991px){
+#panels-ipe-display-panel-context-page-front-page-front-panel .pane-content img{
   max-width: 1000%;
   width: 100%;
+}  
+}
+
+.front .view-content, .page-user .pane-content{
+  box-sizing: border-box; 
 }
 /*
 ** Daily Read Teaser
@@ -370,6 +405,10 @@ body{
 .view-thanks-for-all-your-support- .view-content{
   padding: 20px 40px;
   min-height: 85px;
+}
+
+#page-content .owl-stage{
+  min-width: 100%;
 }
 /*
 ** Footer

@@ -69,15 +69,23 @@
         </div>  
       </div> 
       <div class="row">
-        
-      </div>
+  <div class="header_rp mobile_menu_wrapper">
+          <nav>
+<?php if (isset($page['header_menu'])): ?> 
+              <div class="menu-main-menu-container">
+  <?php print render($page['header_menu']); ?>    	
+              </div>
+<?php endif; ?>
+          </nav>     
+        </div>
+</div>      </div>
     </div>
     <div class="clear"></div>
 
   </div>
 </header>
 
-<div class="main_header main_header--sticky">
+<div class="main_header main_header--sticky desktop">
   <div class="header_rp">
           <nav>
 <?php if (isset($page['header_menu'])): ?> 
