@@ -18,7 +18,8 @@
               items: 1,
               margin: 0,
               autoHeight: false,
-              nav: false,
+              nav: true,
+              dots: false,
               autoplay: true,
               autoplayTimeout: 5000,
               loop: true
