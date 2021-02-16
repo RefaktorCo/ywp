@@ -29,6 +29,9 @@
 			      <?php endif; ?>
 			      <div id="page-content" class="posts-block <?php if ($page['left_sidebar']) { print "hasLS"; } ?>">
               <?php print render($page['content']); ?>
+              
+
+
 			      </div>
               
           

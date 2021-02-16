@@ -1,5 +1,5 @@
 name = Oyster sub
-description = A sub-theme of Oyster. 
+description = A sub-theme of Oyster.
 core = 7.x
 engine = phptemplate
 
@@ -13,6 +13,7 @@ stylesheets[all][] = css/updates.css
 ; Define theme JS libraries.
 scripts[] = js/accordion.js
 scripts[] = js/carousel.js
+scripts[] = js/gallery.js
 
 ; Define theme block regions.
 regions[header_branding] = Header Branding
@@ -20,7 +21,6 @@ regions[header_top_menu] = Header Top Menu
 regions[header_menu] = Header Menu
 regions[fullscreen] = Fullscreen
 regions[content] = Content
-regions[content_front] = Content Front
 regions[xp_content] = XP Content
 regions[right_sidebar] = Right Sidebar
 regions[left_sidebar] = Left Sidebar

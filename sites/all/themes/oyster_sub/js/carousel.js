@@ -22,6 +22,16 @@
                   loop: true
                 });
           });
+      $('.view-thanks-for-all-your-support- .owl-carousel', context)
+        .each(function () {
+          $(this)
+            .owlCarousel({
+              margin:10,
+              loop:true,
+              items:4
+            });
+        });
+
     }
   }
 

@@ -1,0 +1,26 @@
+.span4 {
+	width: 33.3%;
+	display: inline-block;
+	float: left;
+}
+.pub-col6 {
+  width: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.span3 {
+	width: 25%;
+	display: inline-block;
+	float: left;
+}
+.pub-col3 {
+	width: 25%;
+	display: inline-block;
+	float: left;
+}
+
+.panel-region-after_content {
+	clear: both;
+}
+
