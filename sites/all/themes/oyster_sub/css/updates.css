@@ -34,6 +34,15 @@ body{
 }
 .logo_sect{
   padding: 30px 0 0 0;
+  margin-bottom: -20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.logo_sect .slogan{
+  border: none;
+  padding: 10px 0 0 0;
 }
 .logo_def {
   max-width: 300px;
@@ -45,12 +54,13 @@ body{
 .header-menus-wrapp{
   position: relative;
   z-index: 2;
+  margin-bottom: 7px;
 }
 .menu_toggler{
   z-index: 100;
 }
 .header_top_nav{
-  
+
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -70,16 +80,16 @@ body{
 }
 
 @media(max-width:768px){
- .header_top_nav,
+  .header_top_nav,
   .main_header.desktop{
-  display: none;
-}
+    display: none;
+  }
 }
 @media(min-width:769px){
-   
+
   .main_header.movile{
-  display: none;
-}
+    display: none;
+  }
 }
 
 .header_search{
@@ -178,10 +188,10 @@ body{
   width: 100%;
 }
 @media(min-width:991px){
-#panels-ipe-display-panel-context-page-front-page-front-panel .pane-content img{
-  max-width: 1000%;
-  width: 100%;
-}  
+  #panels-ipe-display-panel-context-page-front-page-front-panel .pane-content img{
+    max-width: 1000%;
+    width: 100%;
+  }  
 }
 
 
@@ -278,6 +288,7 @@ body{
 }
 #panels-ipe-display-panel-context-page-front-page-front-panel .pane-title{
   text-align: center;
+  font-size: 18px;
 }
 .view-news-and-events{
 
@@ -380,7 +391,11 @@ body{
   padding-bottom: 0 !important;
 }
 
-#content-logos .owl-nav,
+#content-logos .owl-nav{
+    position: absolute;
+  top: 33%;
+  width: 100%;
+}
 .gallery-wrap .owl-nav{
   position: absolute;
   top: 41%;
