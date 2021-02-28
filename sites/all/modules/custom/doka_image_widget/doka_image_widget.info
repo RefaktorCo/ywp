@@ -1,0 +1,16 @@
+name = Doka Image Widget
+description = Provides a Doka library for image fields.
+core = 7.x
+package = Other
+dependencies[] = image
+stylesheets[all][] = filepond/filepond.css
+stylesheets[all][] = filepond/filepond-plugin-image-edit.css
+stylesheets[all][] = filepond/filepond-plugin-image-preview.css
+stylesheets[all][] = doka/bin/browser/doka.min.css
+stylesheets[all][] = css/styles.css
+
+version = "7.x-1.0"
+core = "7.x"
+project = "doka_image_widget"
+
+

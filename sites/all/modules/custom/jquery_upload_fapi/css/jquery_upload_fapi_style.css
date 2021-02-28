@@ -1,0 +1,91 @@
+@charset "UTF-8";
+/*
+ * jQuery File Upload Plugin CSS Example
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+body {
+  padding-top: 60px;
+}
+
+#uploaded-images-list .file__delete a,
+#uploaded-attachments-list .file__delete a,
+.upload-error .file__delete a {
+  background: transparent url("../images/sprite.png") no-repeat scroll -571px -525px;
+  display: block;
+  height: 13px;
+  position: absolute;
+  width: 16px;
+}
+
+#uploaded-images-list .file-list-item,
+#uploaded-attachments-list .file-list-item {
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.file__thumbnail {
+  display: inline !important;
+  margin-bottom: 0 !important;
+  position: static !important;
+  float: left;
+}
+.file-list-item .file__name {
+  display: inline-block;
+  font-size: 16px;
+  max-height: 22px;
+  max-width: 265px;
+  overflow: hidden;
+  white-space: nowrap;
+  width: auto !important;
+  padding-left: 30px;
+}
+.file__name,
+.file__delete,
+.upload-error-msg {
+  margin-bottom: 0 !important;
+}
+#uploaded-images-list .file-list-item .file-options,
+#uploaded-attachments-list .file__delete {
+  float: right;
+}
+.progress-throbber {
+  background: url("../images/loading.gif") no-repeat;
+  width: 20px;
+  height: 20px;
+  float: left;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+#uploaded-attachments-list .file-list-item .file__thumbnail .attachment-pdf {
+  background: url("../images/sprite.png") no-repeat scroll -246px -302px transparent;
+  width: 31px;
+  height: 28px;
+  display: inline;
+  position: absolute;
+}
+
+#uploaded-attachments-list .file-list-item .file__thumbnail .attachment-doc {
+  background: url("../images/sprite.png") no-repeat scroll -292px -300px transparent;
+  width: 28px;
+  height: 29px;
+  display: inline;
+  position: absolute;
+}
+
+#uploaded-attachments-list .file-list-item .file__thumbnail .attachment-other {
+  background: url("../images/sprite.png") no-repeat scroll -200px -300px transparent;
+  width: 28px;
+  height: 29px;
+  display: inline;
+  position: absolute;
+}
+#max-msg {
+  color: red;
+}

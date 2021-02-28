@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * @file
+ * Module file for Jquery multifile upload.
+ */
+
+ /**
+  * Implements hook_init().
+  */
+function jquery_upload_fapi_init() {
+  $jquery_multifile_upload_path = libraries_get_path('jquery_multifile_upload');
+  $module_path = drupal_get_path('module', 'jquery_upload_fapi');
+  drupal_add_js($jquery_multifile_upload_path . '/' . 'js/vendor/jquery.ui.widget.js');
+  drupal_add_js($jquery_multifile_upload_path . '/' . 'js/jquery.iframe-transport.js');
+  drupal_add_js($jquery_multifile_upload_path . '/' . 'js/jquery.fileupload.js');
+  drupal_add_js($module_path . '/' . 'js/jquery_upload_fapi.js');
+  drupal_add_js($jquery_multifile_upload_path . '/' . 'js/jquery.fileupload-process.js');
+  drupal_add_js($jquery_multifile_upload_path . '/' . 'js/jquery.fileupload-validate.js');
+  drupal_add_css($module_path . '/' . 'css/jquery_upload_fapi_style.css');
+
+  $image_upload_extensions = '(\.|\/)(' . str_replace(',', '|', variable_get('jquery_upload_fapi_image_upload_extensions', 'jpg,jpeg,png,gif')) . ')$';
+  $docs_upload_extensions = '(\.|\/)(' . str_replace(',', '|', variable_get('jquery_upload_fapi_docs_upload_extensions', 'doc,pdf,docx,odt')) . ')$';
+  drupal_add_js(array(
+    'jquery_upload_fapi' => array(
+      'image_upload_max' => variable_get('jquery_upload_fapi_image_upload_max', 2),
+      'image_upload_extensions' => $image_upload_extensions,
+      'image_upload_max_number' => variable_get('jquery_upload_fapi_image_upload_max_number', 5),
+      'docs_upload_max' => variable_get('jquery_upload_fapi_docs_upload_max', 2),
+      'docs_upload_extensions' => $docs_upload_extensions,
+      'docs_upload_max_number' => variable_get('jquery_upload_fapi_docs_upload_max_number', 5),
+      'basepath' => base_path(),
+    ),
+  ), 'setting');
+
+  $directory = drupal_realpath('public://') . '/temp_thumbnail_styles1';
+  if (!is_dir($directory)) {
+    drupal_mkdir($directory, 0777);
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function jquery_upload_fapi_menu() {
+
+  $items = array();
+  $items['ajax/file-upload'] = array(
+    'title' => 'Upload multiple files',
+    'page callback' => 'jquery_upload_fapi_ajax_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/jquery_upload_fapi.pages.inc',
+  );
+  $items['ajax/load-default-files'] = array(
+    'title' => 'Load default files',
+    'page callback' => 'jquery_upload_fapi_load_files',
+    'access callback' => 'user_access',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'includes/jquery_upload_fapi.pages.inc',
+  );
+  $items['admin/file-config'] = array(
+    'title' => 'Upload files configuration',
+    'description' => 'Settings form to manage the images/documents uploaded to the site.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('jquery_upload_fapi_file_config_form'),
+    'access arguments' => array('upload video and images'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 7,
+    'file' => 'includes/jquery_upload_fapi.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function jquery_upload_fapi_theme() {
+  return array(
+    'file_list_item' => array(
+      'template' => 'file-list-item',
+      'path'     => drupal_get_path('module', 'jquery_upload_fapi') . '/templates',
+      'variables' => array(
+        'thumbnailUrl' => NULL,
+        'thumbnail_type' => NULL,
+        'thumbnail_status' => NULL,
+        'fid' => NULL,
+        'name' => NULL,
+        'trimmed_name' => NULL,
+        'size' => NULL,
+      ),
+    ),
+    'file_list_item_image_default' => array(
+      'template' => 'file-list-item-image-default',
+      'path'     => drupal_get_path('module', 'jquery_upload_fapi') . '/templates',
+      'variables' => array(
+        'thumbnail_url' => NULL,
+        'thumbnail_type' => NULL,
+        'thumbnail_status' => NULL,
+        'fid' => NULL,
+        'name' => NULL,
+        'trimmed_name' => NULL,
+        'size' => NULL,
+      ),
+    ),
+  );
+}

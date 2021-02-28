@@ -1,0 +1,47 @@
+<?php
+
+/**
+* Implements hook_menu().
+*/
+function doka_image_widget_menu() {
+  $items['admin/node_update'] = array(
+    'title' => 'Custom page',
+    'page callback' => 'doka_image_widget_ajax_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'doka_ajax.page.inc',
+  );
+
+  return $items;
+}
+
+
+function doka_image_widget_js_alter(&$javascript) {
+
+  // Swap out jQuery to use an updated version of the library.
+  $javascript['misc/jquery.js']['data'] = drupal_get_path('module', 'jquery_update') . '/jquery.js';
+}
+
+function doka_image_widget_form_alter(&$form, $form_state, $form_id) {
+if (($form_id == 'blog_node_form')){
+
+    $form['#attached']['js'] = array(
+       
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-edit.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-preview.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-exif-orientation.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-crop.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-resize.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond-plugin-image-transform.js',
+        drupal_get_path('module', 'doka_image_widget') . '/filepond/filepond.js',
+        drupal_get_path('module', 'doka_image_widget') . '/doka/bin/browser/doka.min.js',
+        
+      drupal_get_path('module', 'doka_image_widget') . '/js/scripts.js',
+   );
+    
+}    
+  
+}
+
+
+
