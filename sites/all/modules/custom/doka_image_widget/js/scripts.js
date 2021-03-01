@@ -40,7 +40,7 @@ console.log('Image field exist');
           imageEditInstantEdit: true,
           server: {
             process: {
-              url: '/site/defaults/files',
+              url: '/sites/defaults/files',
               method: 'POST',
               headers: {
                 'x-customheader': 'Hello World'
@@ -52,10 +52,10 @@ console.log('Image field exist');
                 return formData;
               }
             },
-            revert: '/site/defaults/files/',
-            restore: '/site/defaults/files/',
-            load: '/site/defaults/files/',
-            fetch: '/site/defaults/files/'
+            revert: '/sites/defaults/files/',
+            restore: '/sites/defaults/files/',
+            load: '/sites/defaults/files/',
+            fetch: '/sites/defaults/files/'
           },
           // configure Doka
           imageEditEditor: Doka.create({
