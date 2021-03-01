@@ -39,17 +39,23 @@ console.log('Image field exist');
           // open editor on image drop
           imageEditInstantEdit: true,
           server: {
-            url: 'http://dev.youngwritersproject.org',
             process: {
-              url: '/sites/default/files/private/',
+              url: '/system/files',
               method: 'POST',
+              headers: {
+                'x-customheader': 'Hello World'
+              },
               withCredentials: false,
-              headers: {},
-              timeout: 7000,
-              onload: null,
-              onerror: null,
-              ondata: null
-            }
+              onload: (response) => response.key,
+              onerror: (response) => response.data,
+              ondata: (formData) => {
+                return formData;
+              }
+            },
+            revert: '/system/files/',
+            restore: '/system/files/',
+            load: '/system/files/',
+            fetch: '/system/files/'
           },
           // configure Doka
           imageEditEditor: Doka.create({
