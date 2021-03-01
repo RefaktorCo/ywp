@@ -41,7 +41,7 @@ console.log('Image field exist');
           server: {
             url: 'http://dev.youngwritersproject.org',
             process: {
-              url: './sites/default/files/private/',
+              url: '/sites/default/files/private/',
               method: 'POST',
               withCredentials: false,
               headers: {},
