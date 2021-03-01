@@ -33,14 +33,23 @@ console.log('Image field exist');
 
           // default crop aspect ratio
           imageCropAspectRatio: 1,
-
           // resize to width of 200
           // imageResizeTargetWidth: 200,
 
           // open editor on image drop
           imageEditInstantEdit: true,
           server: {
-            url: '/sites/default/files',
+            url: 'http://dev.youngwritersproject.org',
+            process: {
+              url: './sites/default/files/private/',
+              method: 'POST',
+              withCredentials: false,
+              headers: {},
+              timeout: 7000,
+              onload: null,
+              onerror: null,
+              ondata: null
+            }
           },
           // configure Doka
           imageEditEditor: Doka.create({
@@ -62,12 +71,14 @@ console.log('Image field exist');
                 value: .75
               }
             ]
-          })
+          }
+          )
 
-        });
+        }
+        );
       }
 
-FilePondDoka();
+      FilePondDoka();
 
       $(document).ajaxComplete(function () {
         console.log('AJAX');
