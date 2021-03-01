@@ -40,7 +40,7 @@ console.log('Image field exist');
           // open editor on image drop
           imageEditInstantEdit: true,
           server: {
-            url: '/system/files',
+            url: '/sites/default/files',
           },
           // configure Doka
           imageEditEditor: Doka.create({
