@@ -51,23 +51,23 @@ h3{
 }
 
 .logo_sect-wrapp{
-position: relative;
-z-index: 1;
-display: flex;
-justify-content: flex-start;
-align-content: center;
-min-width: calc(100% - 200px);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-content: center;
+  min-width: calc(100% - 200px);
 }
 
 .logo_sect{
   padding: 0;
   margin-bottom: 0;
   display: flex;
-width: 100%;
-align-content: center;
-align-items: center;
-flex-wrap: nowrap;
-justify-content: flex-start;
+  width: 100%;
+  align-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
 }
 .logo_sect .slogan{
   border: none;
@@ -82,9 +82,9 @@ justify-content: flex-start;
 */
 
 #name-and-slogan {
-    display: inline-block;
-    margin-left: 60px;
-    margin-top: -24px;
+  display: inline-block;
+  margin-left: 60px;
+  margin-top: -24px;
 }
 
 .header_wrapper{
