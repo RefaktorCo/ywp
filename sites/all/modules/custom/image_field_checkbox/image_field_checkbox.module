@@ -497,7 +497,7 @@ function gallery_images_block_view(){
     $image = file_load($record->bundle);
     $image_styled= theme('image_style',
       array(
-        'style_name' => 'gallery',
+        'style_name' => 'oyster_portfolio_gallery',
         'path' => $image->uri,
         'getsize' =>FALSE
       )

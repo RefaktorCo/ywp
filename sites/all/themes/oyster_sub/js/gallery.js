@@ -12,20 +12,31 @@
 
 
       $('.gallery-wrap .owl-carousel', context)
-        .each(function () {
-          $(this)
-            .owlCarousel({
-              items: 1,
-              margin: 0,
-              autoHeight: false,
-              nav: true,
-              dots: false,
-              autoplay: true,
-              autoplayTimeout: 5000,
-              loop: true
-            });
-        });
-
+              .each(function () {
+                $(this)
+                        .owlCarousel({
+                          items: 3,
+                          margin: 0,
+                          autoHeight: false,
+                          merge: true,
+                          nav: true,
+                          dots: false,
+                          autoplay: true,
+                          autoplayTimeout: 5000,
+                          loop: true,
+                          responsive: {
+                            0: {
+                              items: 1,
+                            },
+                            768: {
+                              items: 2,
+                            },
+                            992: {
+                              items: 3,
+                            }
+                          }
+                        });
+              });
 //      $('.view-thanks-for-all-your-support- .owl-carousel', context)
 //          .each(function () {
 //            $(this)

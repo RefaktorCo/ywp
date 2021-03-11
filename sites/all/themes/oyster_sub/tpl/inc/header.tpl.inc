@@ -1,4 +1,5 @@
 <header class="main_header">
+  <div class="container main-container">
   <div class="header_wrapper">
 
     <?php if ($page['header_branding']) {
@@ -70,6 +71,7 @@
       </div> 
   </div>
     </div>
+  </div>
     <div class="clear"></div>
 
   </div>

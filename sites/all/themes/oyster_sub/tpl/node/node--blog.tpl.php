@@ -2,6 +2,7 @@
   global $base_url;
 	$user = user_load($uid);
 	
+
 	if (isset($user->picture->uri)) {
 		$photo = theme('image_style', array('style_name' => 'author_thumbnail', 'path' => $user->picture->uri));
 	}
@@ -69,10 +70,8 @@
         <?php if (isset($content['field_category'])): ?>
           <span><?php print render($content['field_category']); ?></span>
         <?php endif; ?>  
-        <?php if ( theme_get_setting('article_meta_comments') == '1' && isset($comment_count) ) : ?>
-        <span><a href="<?php print $node_url;?>/#comments"><?php print $comment_count; ?> comment<?php if ($comment_count != "1" ) { echo "s"; } ?></a></span>
-        <?php endif; ?>
-        <?php if (render($content['field_ywp_tags'])): ?><span><?php print t('tags: '); print render($content['field_ywp_tags']); ?></span><?php endif;?>
+ 
+       
         <?php if (render($content['field_challenge'])): ?><span><?php print t('challenge: '); print render($content['field_challenge']); ?></span><?php endif;?>
         <?php if (render($content['field_project'])): ?><span><?php print t('project: '); print render($content['field_project']); ?></span><?php endif;?>
         <?php if (isset($content['field_playlist_genre'])): ?>
@@ -161,6 +160,9 @@
 	    
 	    <?php if (render($content['field_like']) || module_exists('statistics')): ?> 
 	    <div class="block_likes">
+        <div class="block_likes--tags">
+         <?php if (render($content['field_ywp_tags'])): ?><span><?php print t('tags: '); print render($content['field_ywp_tags']); ?></span><?php endif;?>
+         </div>
 		    <div class="post-date">
 			    Posted: <?php print format_date($node->created, 'custom', 'm'); ?>.<?php print format_date($node->created, 'custom', 'd'); ?>.<?php print format_date($node->created, 'custom', 'y'); ?> 
 		    </div>  

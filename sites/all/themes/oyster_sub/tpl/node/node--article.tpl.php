@@ -37,10 +37,7 @@
         <?php if ($content['field_article_category']): ?>
           <span><?php print t('in'); ?> <?php print render($content['field_article_category']); ?></span>
         <?php endif; ?>  
-        <?php if ( theme_get_setting('article_meta_comments') == '1' ) : ?>
-        <span><a href="<?php print $node_url;?>/#comments"><?php print $comment_count; ?> <?php print t('comment'); ?><?php if ($comment_count != "1" ) { echo "s"; } ?></a></span>
-        <?php endif; ?>
-        <?php if (render($content['field_tags'])): ?><span><?php print t('tags: '); print render($content['field_tags']); ?></span><?php endif;?>
+        
       </div>   
       <?php if ($display_submitted): ?>                                     
         <div class="author_ava"><?php print $user_picture; ?></div>
@@ -73,6 +70,9 @@
 	    
 	    <?php if (render($content['field_like']) || module_exists('statistics')): ?> 
 	    <div class="block_likes">
+        <div class="block_likes--tags">
+        <?php if (render($content['field_tags'])): ?><span><?php print t('tags: '); print render($content['field_tags']); ?></span><?php endif;?>
+        </div>
 	      <?php if (module_exists('statistics') && user_access("view post access counter")): ?>
 	      <div class="post-views"><i class="stand_icon icon-eye"></i> <span><?php $var = statistics_get($nid); print ($var['totalcount']) +1; ?></span></div>
 	      <?php endif; ?>
