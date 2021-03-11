@@ -51,20 +51,23 @@ h3{
 }
 
 .logo_sect-wrapp{
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  align-content: center;
+position: relative;
+z-index: 1;
+display: flex;
+justify-content: flex-start;
+align-content: center;
+min-width: calc(100% - 200px);
 }
 
 .logo_sect{
   padding: 0;
   margin-bottom: 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+width: 100%;
+align-content: center;
+align-items: center;
+flex-wrap: nowrap;
+justify-content: flex-start;
 }
 .logo_sect .slogan{
   border: none;
@@ -77,6 +80,13 @@ h3{
 /*
 ** HEADER
 */
+
+#name-and-slogan {
+    display: inline-block;
+    margin-left: 60px;
+    margin-top: -24px;
+}
+
 .header_wrapper{
   padding-top: 30px;
   display: flex;
@@ -531,7 +541,9 @@ h3{
   display: none;
 }
 
-
+#panels-ipe-regionid-bot_col_1 .panel-separator{
+  display: none;
+}
 
 #content-logos{
   padding-bottom: 0 !important;
