@@ -10,7 +10,9 @@ $node_link = drupal_get_path_alias('node/' . $node->uid);
 
   <div class="blog_post_page daily-teaser">
     <div class="daily-teaser--image">
-      <?php print render($content['field_image']); ?>
+      <a href="/daily-read">
+        <img src="<?php print path_to_theme();?>/images/the daily deals.png" />
+      </a>
       <h2 class="daily-teaser--content--title"><?php print $title; ?></h2>
       <div class="daily-teaser--content--author">by <a class="daily-teaser--content--author--link" href="<?php print $user_link; ?>"><?php print $user->name; ?></a>
       </div>

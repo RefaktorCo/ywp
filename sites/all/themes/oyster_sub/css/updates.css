@@ -229,11 +229,15 @@ h3{
   line-height: 1.3em;
   font-weight: 500;
 }
-
+h2.pane-title a{
+  font-size: 30px;
+}
 @media(max-width:768px){
-  #panels-ipe-display-panel-context-page-front-page-front-panel h2.pane-title{
+  #panels-ipe-display-panel-context-page-front-page-front-panel h2.pane-title,
+  #panels-ipe-display-panel-context-page-front-page-front-panel h2.pane-title a{
     font-size: 22px;
   }
+
   h2.field-content{
     font-size: 18px;
   }
@@ -640,4 +644,20 @@ footer {
 */
 .block_likes--tags{
   padding-right: 20px;
+}
+
+
+.view-recent-comments .views-row{
+  margin-bottom: 25px;
+  border-bottom: 1px solid #acacac;
+  
+}
+
+.main_header nav ul.menu .sub-menu{
+  width: 300px;
+}
+
+
+.publications--row h3{
+   display:none;
 }
