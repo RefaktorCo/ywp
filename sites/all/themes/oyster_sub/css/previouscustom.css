@@ -500,7 +500,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea {
 }
 
 .front.not-logged-in footer {
-	display: none;
+/*	display: none;*/
 }
 
 .node-type-oyster-page footer {

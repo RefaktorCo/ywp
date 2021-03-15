@@ -81,7 +81,7 @@
   <div class="header_rp">
           <nav>
 <?php if (isset($page['header_menu'])): ?> 
-              <div class="menu-main-menu-container">
+              <div class="menu-main-menu-container container main-container">
   <?php print render($page['header_menu']); ?>    	
               </div>
 <?php endif; ?>
