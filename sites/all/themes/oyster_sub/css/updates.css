@@ -424,12 +424,12 @@ h2.pane-title a{
   width: 100%;
   display: inline-block;
 }
-#panels-ipe-display-panel-context-page-front-page-front-panel .panel-row{
+#page-content .panel-row{
   padding:0 0 75px 0;
 }
-#panels-ipe-display-panel-context-page-front-page-front-panel .pane-title{
+#page-content .pane-title{
   text-align: left;
-  font-size: 18px;
+  font-size: 28px;
 }
 .view-news-and-events{
 
@@ -616,13 +616,14 @@ h2.pane-title a{
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+ 
 }
 #footer-bottom{
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+   margin-bottom: 20px;
 }
 
 
@@ -736,4 +737,8 @@ footer{
 .panel-region-after_content{
   width: 100%;
   clear: both;
+}
+
+#content-top-2 h2.pane-title{
+  display: none;
 }

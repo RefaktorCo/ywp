@@ -8,6 +8,11 @@ $layout = $content['field_layout']['#items'][0]['value'];
       <div class="block-row--content">
       <h1 class="text-center"><?php print $title; ?></h1>
       <?php print render($content['body']); ?>
+      <?php  if(!user_is_logged_in()){?>
+      <a class="btn shortcode_button btn_small btn_type5" href="/user/login">Join/Log in</a>
+      <?php }else{ ?>
+      <a class="btn shortcode_button btn_small btn_type5" href="/node/add/blog">Make a Post</a>
+      <?php }?>
       </div>
     </div>
     <div class="span6">
