@@ -427,7 +427,8 @@ h2.pane-title a{
 #page-content .panel-row{
   padding:0 0 75px 0;
 }
-#page-content h3.pane-title{
+#page-content h3.pane-title,
+#page-content h3.pane-title a{
   text-align: center;
   font-size: 18px;
 }
@@ -760,6 +761,7 @@ footer{
 
 h3.center {
 	text-align: center;
+	font-weight: 500;
 }
 
 .block-row--body {
