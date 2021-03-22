@@ -49,8 +49,9 @@ $layout = $content['field_layout']['#items'][0]['value'];
       <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
       </a>
     <?php endif; ?>
-    
-    <?php print render($content['body']); ?>
+    <div class="block-row--body">
+      <?php print render($content['body']); ?>
+    </div>
   </div>
 <?php } ?>
 
