@@ -750,3 +750,7 @@ footer{
 #content-top-2 h2.pane-title{
   border-bottom: none;
 }
+
+.main_header nav ul.menu > li > a {
+  font-size: 15px;   
+}

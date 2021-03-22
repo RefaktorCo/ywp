@@ -9,15 +9,15 @@ $layout = $content['field_layout']['#items'][0]['value'];
       <h1 class="text-center"><?php print $title; ?></h1>
       <?php print render($content['body']); ?>
       <?php  if(!user_is_logged_in()){?>
-      <a class="btn shortcode_button btn_small btn_type5" href="/user/login">Join/Log in</a>
+      <a class="btn shortcode_button btn_small btn_type5" href="/user/login" target="_blank">Join/Log in</a>
       <?php }else{ ?>
-      <a class="btn shortcode_button btn_small btn_type5" href="/node/add/blog">Make a Post</a>
+      <a class="btn shortcode_button btn_small btn_type5" href="/node/add/blog" target="_blank">Make a Post</a>
       <?php }?>
       </div>
     </div>
     <div class="span6">
       <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
-        <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>">
+        <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
         <?php endif; ?>
         <?php if (isset($content['field_image'])): ?>
           <?php print render($content['field_image']); ?>
@@ -31,7 +31,7 @@ $layout = $content['field_layout']['#items'][0]['value'];
   <div class="node--block">
     
     <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
-      <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>">
+      <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
       <?php endif; ?>
       <?php if (isset($content['field_image'])): ?>
         <?php print render($content['field_image']); ?>
