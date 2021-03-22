@@ -16,9 +16,7 @@ $node_link = drupal_get_path_alias('node/' . $node->nid);
       <div class="daily-teaser--content--author">by <a class="daily-teaser--content--author--link" href="<?php print $user_link; ?>"><?php print $user->name; ?></a>
       </div>
       <div class="daily-teaser--content--more">
-        <a class="daily-teaser--content--body--link reamdore" href="<?php print $node_link; ?>">
-          <?php print t('Read More'); ?>
-        </a>
+        
       </div>
     </div>
     <div class="daily-teaser--content">
@@ -27,6 +25,11 @@ $node_link = drupal_get_path_alias('node/' . $node->nid);
         <?php print render($content['body']); ?>
 
       </div>
+      
+      <a class="daily-teaser--content--body--link reamdore" href="<?php print $node_link; ?>">
+        <?php print t('Read More'); ?>
+      </a>
+      
     </div>
   </div>
 </div>
