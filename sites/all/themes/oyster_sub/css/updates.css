@@ -418,7 +418,7 @@ h2.pane-title a{
 */
 #content-bot .pane-title, 
 #content-main .pane-title{
-  display: none;
+  /*display: none;*/
 }
 #content-bot  .pane-title--main{
   width: 100%;
@@ -428,8 +428,8 @@ h2.pane-title a{
   padding:0 0 75px 0;
 }
 #page-content .pane-title{
-  text-align: left;
-  font-size: 28px;
+  text-align: center;
+  font-size: 18px;
 }
 .view-news-and-events{
 
