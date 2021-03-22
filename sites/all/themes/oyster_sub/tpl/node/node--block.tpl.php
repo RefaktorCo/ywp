@@ -32,6 +32,16 @@ $layout = $content['field_layout']['#items'][0]['value'];
     
     <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
       <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
+    <?php endif; ?>
+    
+    <h3 class="center"><?php print $title; ?></h3>
+    
+    <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      </a>
+    <?php endif; ?>
+    
+    <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
       <?php endif; ?>
       <?php if (isset($content['field_image'])): ?>
         <?php print render($content['field_image']); ?>
@@ -39,7 +49,7 @@ $layout = $content['field_layout']['#items'][0]['value'];
       <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
       </a>
     <?php endif; ?>
-    <h3><?php print $title; ?></h3>
+    
     <?php print render($content['body']); ?>
   </div>
 <?php } ?>
