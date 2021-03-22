@@ -427,11 +427,13 @@ h2.pane-title a{
 #page-content .panel-row{
   padding:0 0 75px 0;
 }
-#page-content .pane-title,
-#page-content .pane-title a{
+#page-content h3.pane-title{
   text-align: center;
   font-size: 18px;
 }
+
+#page-content .pane-title a
+
 .view-news-and-events{
 
 }
