@@ -2,8 +2,7 @@
 global $base_url;
 $user = user_load($node->uid);
 $user_link = drupal_get_path_alias('user/' . $node->uid);
-
-$node_link = drupal_get_path_alias('node/' . $node->uid);
+$node_link = drupal_get_path_alias('node/' . $node->nid);
 ?>
 
 <div id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix annotate"<?php print $attributes; ?>>
