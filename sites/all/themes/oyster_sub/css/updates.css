@@ -74,12 +74,16 @@ h3{
   padding: 10px 0 0 0;
 }
 .logo_def {
-  max-width: 250px;
+  max-width: 325px;
 }
 
 /*
 ** HEADER
 */
+
+.header_top_nav a {
+	color: #343434;
+}
 
 #name-and-slogan {
   display: inline-block;
