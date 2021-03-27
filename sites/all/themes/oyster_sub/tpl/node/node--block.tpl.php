@@ -73,6 +73,26 @@ $layout = $content['field_layout']['#items'][0]['value'];
     <a href="/node/<?php print $node->nid;?>/edit" target='_blank'>[Edit]</a>
     <?php endif; ?>
   </div>
+<?php }else if($layout == 4) { ?>
+  <div class="node--block">
+       
+    <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
+      <?php endif; ?>
+      <?php if (isset($content['field_image'])): ?>
+        <?php print render($content['field_image']); ?>
+      <?php endif; ?>
+      <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      </a>
+    <?php endif; ?>
+     
+    <div class="block-row--body">
+      <?php print render($content['body']); ?>
+    </div>
+   <?php if (in_array('administrator', $user->roles)) :?>
+    <a href="/node/<?php print $node->nid;?>/edit" target='_blank'>[Edit]</a>
+    <?php endif; ?>
+  </div>
 <?php }else{ ?>
   <div class="node--block">
     
