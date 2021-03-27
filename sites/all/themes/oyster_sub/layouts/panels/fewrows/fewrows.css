@@ -30,6 +30,12 @@
 	float: left;
 }
 
+.pub-col5 {
+	width: 20%;
+	display: inline-block;
+	float: left;
+}
+
 .panel-region-after_content {
 	clear: both;
 }

@@ -471,6 +471,7 @@ h2.pane-title a{
   #content-11 .pub-col6{
     width: 100% !important;
   }
+    #content-11 .pub-col5,
   #content-11 .pub-col3,
   #content-11 .views-row{
     width: 100% !important;
@@ -518,7 +519,7 @@ h2.pane-title a{
   float: left;
 }
 
-#content-11 .pub-col3 {
+#content-11 .pub-col5 {
   width: calc(20% - 20px);
   display: inline-block;
   float: left;
@@ -774,4 +775,19 @@ h3.center {
 
 .block-row--body {
 	margin-top: 10px;
+}
+
+#daily-read-image h3{
+  display: none;
+}
+#nyt h3{
+  display: none;
+}
+
+.view-daily-read-editable .views-field-name{
+  padding-bottom: 15px;
+}
+
+.view-daily-read-editable .views-field-body{
+  padding-bottom: 15px;
 }
