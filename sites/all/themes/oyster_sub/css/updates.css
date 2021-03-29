@@ -15,7 +15,7 @@ h3{
 }
 
 h1, h2, h3, h4, h5, h6, h1 span, h2 span, h3 span, h4 span, h5 span, h6 span, h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-	color: #545454;
+  color: #545454;
 }
 
 
@@ -86,7 +86,7 @@ h1, h2, h3, h4, h5, h6, h1 span, h2 span, h3 span, h4 span, h5 span, h6 span, h1
 */
 
 .header_top_nav a {
-	color: #343434;
+  color: #343434;
 }
 
 #name-and-slogan {
@@ -320,6 +320,10 @@ h2.pane-title a{
 .block-row{
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+#content-top a{
+  color: #fff;
 }
 .block-row--content{
   padding-top: 20px;
@@ -471,7 +475,7 @@ h2.pane-title a{
   #content-11 .pub-col6{
     width: 100% !important;
   }
-    #content-11 .pub-col5,
+  #content-11 .pub-col5,
   #content-11 .pub-col3,
   #content-11 .views-row{
     width: 100% !important;
@@ -629,14 +633,14 @@ h2.pane-title a{
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
- 
+
 }
 #footer-bottom{
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-   margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 
@@ -757,24 +761,31 @@ footer{
 }
 
 #content-top-2 .span9 {
-	border-right: 1px solid #000;
+  border-right: 1px solid #000;
 }
 
 #content-top-2 h2.pane-title{
   border-bottom: none;
+  font-size: 28px;
+  margin-bottom: 10px;
 }
-
+@media(min-width:992px){
+  #nyt{
+    padding-left: 25px;
+    border-left: 1px solid #000;
+  }
+}
 .main_header nav ul.menu > li > a {
   font-size: 14px;   
 }
 
 h3.center {
-	text-align: center;
-	font-size: 16px;
+  text-align: center;
+  font-size: 16px;
 }
 
 .block-row--body {
-	margin-top: 10px;
+  margin-top: 10px;
 }
 
 #daily-read-image h3{
