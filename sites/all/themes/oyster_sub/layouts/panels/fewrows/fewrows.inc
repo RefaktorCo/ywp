@@ -7,7 +7,6 @@ $plugin = array(
     'theme' => 'fewrows',
     'admin css' => 'fewrows.css',
     'regions' => array(
-        'left_content' => t('Left Content'),
         'left_content2' => t('Daily Read'),
         'top_content' => t('Top Content'),
         'right_content' => t('Right Content'),

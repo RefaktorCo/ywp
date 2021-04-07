@@ -802,3 +802,39 @@ h3.center {
 .view-daily-read-editable .views-field-body{
   padding-bottom: 15px;
 }
+
+@media(min-width: 992px){
+  .view-daily-read-editable .views-row{
+    -moz-column-count: 2;
+    -moz-column-gap: 30px;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 30px;
+    column-count: 2;
+    column-gap: 30px;
+  }
+}
+.view-daily-read-editable h2{
+  padding-bottom: 20px;
+}
+
+.view-daily-read-editable .views-field-view-node{
+  text-align: right;
+  padding-right: 50px;
+}
+.view-daily-read-editable{
+  position: relative;
+}
+.view-daily-read-editable .views-field-nothing{
+  position: absolute;
+  text-align: right;
+  top:0;
+  right: calc(50% + 49px);
+  z-index: 10;
+}
+
+.view-daily-read-editable .views-field-nothing img{
+  width: 32px !important;
+  max-width: 32px !important;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+}

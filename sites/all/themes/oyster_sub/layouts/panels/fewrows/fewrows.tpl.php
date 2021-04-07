@@ -5,10 +5,7 @@
 </div>
 <div id="content-top-2" class="panel-row">
   <div class="row">
-    <div id="daily-read-image" class="span4">
-      <?php print $content['left_content']; ?>
-    </div>   
-    <div class="span4">
+    <div class="span8">
       <?php print $content['left_content2']; ?>
     </div>  
     <div id="nyt" class="span4">
