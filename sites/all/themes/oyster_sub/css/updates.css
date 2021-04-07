@@ -766,9 +766,21 @@ footer{
 
 #content-top-2 h2.pane-title{
   border-bottom: none;
-  font-size: 28px;
-  margin-bottom: 10px;
+  margin-bottom: 00px;
 }
+
+#content-top-2 .titles {
+	border-bottom: 2px solid #545454;
+}
+
+#content-top-2 h2.pane-title.new-at-ywp {
+	padding-left: 20px;
+}
+
+#content-top-2 .content-area {
+	padding-top: 20px;
+}
+
 @media(min-width:992px){
   #nyt{
     padding-left: 25px;

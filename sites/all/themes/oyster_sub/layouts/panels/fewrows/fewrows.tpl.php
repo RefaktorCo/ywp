@@ -9,10 +9,10 @@
 		  <h2 class="pane-title pane-title--main ">THE DAILY READ</h2>
 		</div>
 		<div class="span4">	
-			<h2 class="pane-title pane-title--main ">NEW AT YWP</h2>
+			<h2 class="pane-title pane-title--main new-at-ywp">NEW AT YWP</h2>
 		</div>
 	</div>
-  <div class="row">
+  <div class="row content-area">
     <div class="span8">
       <?php print $content['left_content2']; ?>
     </div>  
