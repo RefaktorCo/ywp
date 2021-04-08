@@ -827,8 +827,8 @@ h3.center {
 }
 @media(min-width: 992px){
 	.view-daily-read-editable h2{
-	  padding-bottom: 20px;
-	  max-width: 320px;
+	  padding-bottom: 0px;
+	  margin-bottom: 5px;
 	}
 	.view-daily-read-editable .author_ava {
 
