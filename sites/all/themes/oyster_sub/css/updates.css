@@ -828,11 +828,10 @@ h3.center {
 @media(min-width: 992px){
 	.view-daily-read-editable h2{
 	  padding-bottom: 20px;
-	  max-width: 350px;
+	  max-width: 320px;
 	}
 	.view-daily-read-editable .author_ava {
-		position: relative;
-    right: -25px;
+
 	}
 }
 
