@@ -1,0 +1,15 @@
+import { Component } from '@angular/core';
+import { overlayEditor } from 'doka';
+import { DokaImageEditorAbstractComponent } from './doka-image-editor-abstract.component';
+export class DokaImageEditorOverlayComponent extends DokaImageEditorAbstractComponent {
+    initEditor(element, props) {
+        return overlayEditor(element, props);
+    }
+}
+DokaImageEditorOverlayComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'doka-image-editor-overlay',
+                template: ` <ng-content></ng-content> `
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZG9rYS1pbWFnZS1lZGl0b3Itb3ZlcmxheS5jb21wb25lbnQuanMiLCJzb3VyY2VSb290IjoiLi4vLi4vLi4vLi4vc3JjL2FuZ3VsYXItZG9rYS92OS9wcm9qZWN0cy9hbmd1bGFyLWRva2Evc3JjLyIsInNvdXJjZXMiOlsibGliL2Rva2EtaW1hZ2UtZWRpdG9yLW92ZXJsYXkuY29tcG9uZW50LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBLE9BQU8sRUFBRSxTQUFTLEVBQVUsTUFBTSxlQUFlLENBQUM7QUFFbEQsT0FBTyxFQUFFLGFBQWEsRUFBRSxNQUFNLE1BQU0sQ0FBQztBQUNyQyxPQUFPLEVBQUUsZ0NBQWdDLEVBQUUsTUFBTSx3Q0FBd0MsQ0FBQztBQU8xRixNQUFNLE9BQU8sK0JBQ1QsU0FBUSxnQ0FBZ0M7SUFFeEMsVUFBVSxDQUFDLE9BQU8sRUFBRSxLQUFLO1FBQ3JCLE9BQU8sYUFBYSxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN6QyxDQUFDOzs7WUFWSixTQUFTLFNBQUM7Z0JBQ1AsUUFBUSxFQUFFLDJCQUEyQjtnQkFDckMsUUFBUSxFQUFFLDZCQUE2QjthQUUxQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbXBvbmVudCwgT25Jbml0IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5cbmltcG9ydCB7IG92ZXJsYXlFZGl0b3IgfSBmcm9tICdkb2thJztcbmltcG9ydCB7IERva2FJbWFnZUVkaXRvckFic3RyYWN0Q29tcG9uZW50IH0gZnJvbSAnLi9kb2thLWltYWdlLWVkaXRvci1hYnN0cmFjdC5jb21wb25lbnQnO1xuXG5AQ29tcG9uZW50KHtcbiAgICBzZWxlY3RvcjogJ2Rva2EtaW1hZ2UtZWRpdG9yLW92ZXJsYXknLFxuICAgIHRlbXBsYXRlOiBgIDxuZy1jb250ZW50PjwvbmctY29udGVudD4gYCxcbiAgICBzdHlsZXM6IFtdLFxufSlcbmV4cG9ydCBjbGFzcyBEb2thSW1hZ2VFZGl0b3JPdmVybGF5Q29tcG9uZW50XG4gICAgZXh0ZW5kcyBEb2thSW1hZ2VFZGl0b3JBYnN0cmFjdENvbXBvbmVudFxuICAgIGltcGxlbWVudHMgT25Jbml0IHtcbiAgICBpbml0RWRpdG9yKGVsZW1lbnQsIHByb3BzKSB7XG4gICAgICAgIHJldHVybiBvdmVybGF5RWRpdG9yKGVsZW1lbnQsIHByb3BzKTtcbiAgICB9XG59XG4iXX0=

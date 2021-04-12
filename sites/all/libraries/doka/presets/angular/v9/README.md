@@ -1,0 +1,1 @@
+-   add path to doka styles to angular.json -> build/options/styles

@@ -1,0 +1,15 @@
+import { Component } from '@angular/core';
+import { appendEditor } from 'doka';
+import { DokaImageEditorAbstractComponent } from './doka-image-editor-abstract.component';
+export class DokaImageEditorComponent extends DokaImageEditorAbstractComponent {
+    initEditor(element, props) {
+        return appendEditor(element, props);
+    }
+}
+DokaImageEditorComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'doka-image-editor',
+                template: ` <ng-content></ng-content> `
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZG9rYS1pbWFnZS1lZGl0b3IuY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6Ii4uLy4uLy4uLy4uL3NyYy9hbmd1bGFyLWRva2EvdjkvcHJvamVjdHMvYW5ndWxhci1kb2thL3NyYy8iLCJzb3VyY2VzIjpbImxpYi9kb2thLWltYWdlLWVkaXRvci5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsT0FBTyxFQUFFLFNBQVMsRUFBVSxNQUFNLGVBQWUsQ0FBQztBQUVsRCxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0sTUFBTSxDQUFDO0FBQ3BDLE9BQU8sRUFBRSxnQ0FBZ0MsRUFBRSxNQUFNLHdDQUF3QyxDQUFDO0FBTzFGLE1BQU0sT0FBTyx3QkFBeUIsU0FBUSxnQ0FBZ0M7SUFDMUUsVUFBVSxDQUFDLE9BQU8sRUFBRSxLQUFLO1FBQ3JCLE9BQU8sWUFBWSxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN4QyxDQUFDOzs7WUFSSixTQUFTLFNBQUM7Z0JBQ1AsUUFBUSxFQUFFLG1CQUFtQjtnQkFDN0IsUUFBUSxFQUFFLDZCQUE2QjthQUUxQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbXBvbmVudCwgT25Jbml0IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XG5cbmltcG9ydCB7IGFwcGVuZEVkaXRvciB9IGZyb20gJ2Rva2EnO1xuaW1wb3J0IHsgRG9rYUltYWdlRWRpdG9yQWJzdHJhY3RDb21wb25lbnQgfSBmcm9tICcuL2Rva2EtaW1hZ2UtZWRpdG9yLWFic3RyYWN0LmNvbXBvbmVudCc7XG5cbkBDb21wb25lbnQoe1xuICAgIHNlbGVjdG9yOiAnZG9rYS1pbWFnZS1lZGl0b3InLFxuICAgIHRlbXBsYXRlOiBgIDxuZy1jb250ZW50PjwvbmctY29udGVudD4gYCxcbiAgICBzdHlsZXM6IFtdLFxufSlcbmV4cG9ydCBjbGFzcyBEb2thSW1hZ2VFZGl0b3JDb21wb25lbnQgZXh0ZW5kcyBEb2thSW1hZ2VFZGl0b3JBYnN0cmFjdENvbXBvbmVudCBpbXBsZW1lbnRzIE9uSW5pdCB7XG4gICAgaW5pdEVkaXRvcihlbGVtZW50LCBwcm9wcykge1xuICAgICAgICByZXR1cm4gYXBwZW5kRWRpdG9yKGVsZW1lbnQsIHByb3BzKTtcbiAgICB9XG59XG4iXX0=

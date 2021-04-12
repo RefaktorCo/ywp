@@ -1,0 +1,41 @@
+<link rel="stylesheet" href="jquery-doka/doka.css" />
+
+<style>
+    .inline-editor {
+        width: 640px;
+        height: 480px;
+    }
+</style>
+
+<div class="inline-editor"></div>
+<img class="inline-result" src="" alt="" />
+
+<script src="jquery.js"></script>
+<script src="jquery-doka/doka.js"></script>
+
+<script>
+    var {
+        setPlugins,
+        plugin_crop,
+        createDefaultImageReader,
+        createDefaultImageWriter,
+        locale_en_gb,
+        plugin_crop_locale_en_gb,
+    } = $.fn.doka;
+
+    setPlugins(plugin_crop);
+
+    var editor = $('.inline-editor').doka({
+        src: './image.jpeg',
+        imageReader: createDefaultImageReader(),
+        imageWriter: createDefaultImageWriter(),
+        locale: Object.assign({}, locale_en_gb, plugin_crop_locale_en_gb),
+    });
+
+    $('.inline-editor').on('doka:load', (e) => console.log('inline load', e));
+
+    $('.inline-editor').on('doka:process', (e) => {
+        console.log('inline process', e);
+        $('.inline-result').attr('src', URL.createObjectURL(e.detail.dest));
+    });
+</script>

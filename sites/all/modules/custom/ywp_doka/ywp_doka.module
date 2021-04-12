@@ -1,0 +1,138 @@
+<?php
+/**
+ * @file
+ * Provides a filefield source that uses Doka editor to prepare image before uploading.
+ */
+
+/**
+ * Implements hook_libraries_info().
+ *
+ * @noinspection PhpUnused
+ */
+function ywp_doka_libraries_info() {
+  $libraries = array();
+
+  $libraries['doka'] = array(
+    'name' => 'Doka image editor',
+    'vendor url' => 'https://pqina.nl/doka/',
+    'version' => '7.5.0',
+    'files' => array(
+      'js' => array(
+        'packages/doka/doka-umd.js',
+      ),
+      'css' => array(
+        'packages/doka/doka.css',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_filefield_sources_info().
+ *
+ * @noinspection PhpUnused
+ */
+function ywp_doka_filefield_sources_info() {
+  $source = array();
+  $source['doka'] = array(
+    'name' => t('Doka image editor'),
+    'label' => t('Doka'),
+    'description' => t('Edit images before uploading using Doka editor.'),
+    'process' => 'ywp_doka_filefield_source_process',
+    'value' => 'ywp_doka_filefield_source_value',
+    'weight' => -20,
+  );
+  return $source;
+}
+
+/**
+ * A #process callback to extend the filefield_widget element type.
+ *
+ * @noinspection PhpUnused
+ * @noinspection PhpUnusedParameterInspection
+ */
+function ywp_doka_filefield_source_process($element, &$form_state, $form) {
+  $module_path = drupal_get_path('module', 'ywp_doka');
+
+  // Attach required library and a custom JS handler.
+  $element['#attached']['libraries_load'][] = array('doka');
+  $element['#attached']['js'][] = $module_path . '/js/ywp_doka.init.js';
+  $element['#attached']['js'][] = $module_path . '/js/ywp_doka.filefield_source.js';
+
+  $element['filefield_doka'] = array(
+    '#weight' => 90,
+    '#prefix' => '<div class="filefield-source filefield-source-doka clearfix">',
+    '#suffix' => '</div>',
+    '#filefield_source' => TRUE, // Required for proper theming.
+  );
+
+  $element['filefield_doka']['select'] = array(
+    '#type' => 'button',
+    '#value' => t('Select file'),
+    '#attributes' => array(
+      'class' => array('filefield-source-doka-select'),
+    ),
+  );
+
+  $element['filefield_doka']['filename'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array(
+      'class' => array('filefield-source-doka-filename'),
+    ),
+  );
+
+  $element['filefield_doka']['contents'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array(
+      'class' => array('filefield-source-doka-contents'),
+    ),
+  );
+
+  $element['filefield_doka']['file'] = array(
+    '#type' => 'file',
+    '#attributes' => array(
+      'class' => array('filefield-source-doka-file', 'element-hidden'),
+    ),
+  );
+
+  $element['filefield_doka']['upload'] = array(
+    '#type' => 'submit',
+    '#value' => t('Upload'),
+    '#ajax' => array(
+      'path' => 'file/ajax/' . implode('/', $element['#array_parents']) . '/' . $form['form_build_id']['#value'],
+      'wrapper' => $element['upload_button']['#ajax']['wrapper'],
+      'effect' => 'fade',
+      'progress' => array(
+        'type' => 'throbber',
+        'message' => t('Uploading file...'),
+      ),
+    ),
+    '#validate' => array(),
+    '#submit' => array('filefield_sources_field_submit'),
+    '#limit_validation_errors' => array($element['#parents']),
+    '#attributes' => array(
+      'class' => array('filefield-source-doka-submit', 'element-hidden'),
+    ),
+  );
+
+  return $element;
+}
+
+/**
+ * A #filefield_value_callback function.
+ *
+ * @see filefield_source_clipboard_value()
+ * @noinspection PhpUnused
+ */
+function ywp_doka_filefield_source_value($element, &$item) {
+  // Reuse filefield_source_clipboard_value() as it implements exactly the same
+  // logic but with a different top-level key.
+  if (!empty($item['filefield_doka']['filename']) && !empty($item['filefield_doka']['contents'])) {
+    module_load_include('inc', 'filefield_sources', 'sources/clipboard');
+    $item['filefield_clipboard'] = $item['filefield_doka'];
+    filefield_source_clipboard_value($element, $item);
+    unset($item['filefield_clipboard']);
+  }
+}

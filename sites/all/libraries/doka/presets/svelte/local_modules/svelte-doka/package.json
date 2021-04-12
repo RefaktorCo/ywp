@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "version": "7.5.0",
+  "name": "svelte-doka",
+  "browser": "index.js",
+  "main": "index.js",
+  "license": "https://pqina.nl/doka/license"
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <meta name="viewport" content="width=device-width" />
+
+        <title>jQuery</title>
+
+        <link rel="icon" href="favicon.ico" />
+        <link rel="stylesheet" href="./jquery-doka/doka.css" />
+
+        <style>
+            html {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+                    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            img {
+                max-width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Doka Image Editor</h1>
+
+        <h2>Inline</h2>
+        <div class="inline-editor" style="height: 70vh"></div>
+        <p><img class="inline-result" src="" alt="" /></p>
+
+        <h2>Modal</h2>
+        <p><button class="modal-button">Open editor</button></p>
+        <p><img class="modal-result" src="" alt="" /></p>
+
+        <h2>Overlay</h2>
+
+        <p><button class="overlay-button" data-action="open">Open editor</button></p>
+        <p>
+            <button style="display: none" class="overlay-button" data-action="close">
+                Close editor
+            </button>
+        </p>
+        <img class="overlay-result" src="image.jpeg" width="512" height="256" alt="" />
+        <div class="overlay-editor" style="display: none; width: 512px; height: 256px"></div>
+
+        <script src="jquery.js"></script>
+        <script src="jquery-doka/doka.js"></script>
+
+        <script>
+            var {
+                createDefaultImageReader,
+                createDefaultImageWriter,
+                locale_en_gb,
+                setPlugins,
+                plugin_crop,
+                plugin_crop_defaults,
+                plugin_crop_locale_en_gb,
+                plugin_filter,
+                plugin_filter_defaults,
+                plugin_filter_locale_en_gb,
+                plugin_finetune,
+                plugin_finetune_defaults,
+                plugin_finetune_locale_en_gb,
+                plugin_decorate,
+                plugin_decorate_defaults,
+                plugin_decorate_locale_en_gb,
+                component_shape_editor_locale_en_gb,
+            } = $.fn.doka;
+
+            setPlugins(plugin_crop, plugin_filter, plugin_finetune, plugin_decorate);
+
+            // inline
+            var editor = $('.inline-editor').doka({
+                src: './image.jpeg',
+                imageReader: createDefaultImageReader(),
+                imageWriter: createDefaultImageWriter(),
+
+                // set default view properties
+                cropSelectPresetOptions: plugin_crop_defaults.cropSelectPresetOptions,
+                filterFunctions: plugin_filter_defaults.filterFunctions,
+                filterOptions: plugin_filter_defaults.filterOptions,
+                finetuneControlConfiguration: plugin_finetune_defaults.finetuneControlConfiguration,
+                finetuneOptions: plugin_finetune_defaults.finetuneOptions,
+                decorateTools: plugin_decorate_defaults.decorateTools,
+                decorateToolShapes: plugin_decorate_defaults.decorateToolShapes,
+                decorateShapeControls: plugin_decorate_defaults.decorateShapeControls,
+
+                // set locale to en_gb
+                locale: Object.assign(
+                    {},
+                    locale_en_gb,
+                    plugin_crop_locale_en_gb,
+                    plugin_finetune_locale_en_gb,
+                    plugin_filter_locale_en_gb,
+                    plugin_decorate_locale_en_gb,
+                    component_shape_editor_locale_en_gb
+                ),
+            });
+
+            $('.inline-editor').on('doka:load', (e) => console.log('inline load', e));
+
+            $('.inline-editor').on('doka:process', (e) => {
+                console.log('inline process', e);
+                $('.inline-result').attr('src', URL.createObjectURL(e.detail.dest));
+            });
+
+            // modal
+            $('.modal-button').on('click', (e) => {
+                // create and open the modal
+                var editor = $.fn.doka.openEditor({
+                    src: './image.jpeg',
+                    imageReader: createDefaultImageReader(),
+                    imageWriter: createDefaultImageWriter(),
+
+                    // set default view properties
+                    cropSelectPresetOptions: plugin_crop_defaults.cropSelectPresetOptions,
+                    filterFunctions: plugin_filter_defaults.filterFunctions,
+                    filterOptions: plugin_filter_defaults.filterOptions,
+                    finetuneControlConfiguration:
+                        plugin_finetune_defaults.finetuneControlConfiguration,
+                    finetuneOptions: plugin_finetune_defaults.finetuneOptions,
+                    decorateTools: plugin_decorate_defaults.decorateTools,
+                    decorateToolShapes: plugin_decorate_defaults.decorateToolShapes,
+                    decorateShapeControls: plugin_decorate_defaults.decorateShapeControls,
+
+                    // set locale to en_gb
+                    locale: Object.assign(
+                        {},
+                        locale_en_gb,
+                        plugin_crop_locale_en_gb,
+                        plugin_finetune_locale_en_gb,
+                        plugin_filter_locale_en_gb,
+                        plugin_decorate_locale_en_gb,
+                        component_shape_editor_locale_en_gb
+                    ),
+                });
+
+                // note, these are not jQuery event handlers, therefor the events are not prefixed with `doka:`
+                editor.on('load', console.log);
+
+                // this will update the result image with the returned image file
+                editor.on('process', (res) =>
+                    $('.modal-result').attr('src', URL.createObjectURL(res.dest))
+                );
+            });
+
+            // overlay
+            var overlayEditor;
+            var overlayState;
+            $('.overlay-button[data-action=open]').on('click', (e) => {
+                // hide result
+                $('.overlay-result').hide();
+                $('.overlay-editor').show();
+                $('.overlay-button[data-action=open]').hide();
+                $('.overlay-button[data-action=close]').show();
+
+                // get overlay element
+                var target = $('.overlay-editor').get(0);
+
+                // append overlay editor
+                overlayEditor = $.fn.doka.overlayEditor(target, {
+                    src: './image.jpeg',
+                    imageReader: createDefaultImageReader(),
+                    imageWriter: createDefaultImageWriter(),
+
+                    // limit utils
+                    utils: ['crop'],
+
+                    // set locale to en_gb (we don't load the finetune and filter locale because those aren't available when in overlay mode)
+                    locale: Object.assign({}, locale_en_gb, plugin_crop_locale_en_gb),
+                    imageState: overlayState,
+                });
+
+                overlayEditor.on('process', (res) => {
+                    overlayState = res.imageState;
+                    $('.overlay-result').attr('src', URL.createObjectURL(res.dest));
+                    $('.overlay-result').show();
+                    overlayEditor.destroy();
+                    overlayEditor = undefined;
+                    $('.overlay-editor').hide();
+                });
+            });
+
+            $('.overlay-button[data-action=close]').on('click', (e) => {
+                if (!overlayEditor) return;
+                overlayEditor.destroy();
+                overlayEditor = undefined;
+
+                $('.overlay-result').show();
+                $('.overlay-editor').hide();
+                $('.overlay-button[data-action=open]').show();
+                $('.overlay-button[data-action=close]').hide();
+            });
+        </script>
+    </body>
+</html>

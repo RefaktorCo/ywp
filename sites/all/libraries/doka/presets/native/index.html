@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Native</title>
+        <link rel="stylesheet" href="./doka/doka.css" />
+        <style>
+            html {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+                    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            body {
+                padding: 1em;
+            }
+
+            img {
+                max-width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Doka Image Editor</h1>
+
+        <h2>Inline</h2>
+        <div class="inline-editor" style="width: 800px; height: 600px"></div>
+        <p><img class="inline-result" src="" alt="" /></p>
+
+        <h2>Modal</h2>
+        <p><button class="modal-button">Open editor</button></p>
+        <p><img class="modal-result" src="" alt="" /></p>
+
+        <h2>Overlay</h2>
+        <p><button class="overlay-button" data-action="open">Open editor</button></p>
+        <p>
+            <button class="overlay-button" data-action="close" style="display: none">
+                Close editor
+            </button>
+        </p>
+        <p><img class="overlay-result" width="512" src="image.jpeg" alt="" /></p>
+        <div class="overlay-editor" style="display: none; width: 512px; height: 256px"></div>
+
+        <script type="module">
+            import {
+                // editor
+                appendEditor,
+                openEditor,
+                overlayEditor,
+                createDefaultImageReader,
+                createDefaultImageWriter,
+                locale_en_gb,
+
+                // plugins
+                setPlugins,
+                plugin_crop,
+                plugin_crop_defaults,
+                plugin_crop_locale_en_gb,
+                plugin_filter,
+                plugin_filter_defaults,
+                plugin_filter_locale_en_gb,
+                plugin_finetune,
+                plugin_finetune_defaults,
+                plugin_finetune_locale_en_gb,
+                plugin_decorate,
+                plugin_decorate_defaults,
+                plugin_decorate_locale_en_gb,
+                component_shape_editor_locale_en_gb,
+            } from './doka/doka.js';
+
+            setPlugins(plugin_crop, plugin_filter, plugin_finetune, plugin_decorate);
+
+            // inline
+            {
+                const editor = appendEditor('.inline-editor', {
+                    src: './image.jpeg',
+                    imageReader: createDefaultImageReader(),
+                    imageWriter: createDefaultImageWriter(),
+                    ...plugin_crop_defaults,
+                    ...plugin_filter_defaults,
+                    ...plugin_finetune_defaults,
+                    ...plugin_decorate_defaults,
+                    locale: {
+                        ...locale_en_gb,
+                        ...plugin_crop_locale_en_gb,
+                        ...plugin_finetune_locale_en_gb,
+                        ...plugin_filter_locale_en_gb,
+                        ...plugin_decorate_locale_en_gb,
+                        ...component_shape_editor_locale_en_gb,
+                    },
+                });
+
+                editor.on('load', (res) => console.log('inline result', res));
+
+                editor.on('process', (res) =>
+                    document
+                        .querySelector('.inline-result')
+                        .setAttribute('src', URL.createObjectURL(res.dest))
+                );
+            }
+
+            // modal
+            document.querySelector('.modal-button').addEventListener('click', () => {
+                const editor = openEditor({
+                    src: './image.jpeg',
+                    imageReader: createDefaultImageReader(),
+                    imageWriter: createDefaultImageWriter(),
+                    ...plugin_crop_defaults,
+                    ...plugin_filter_defaults,
+                    ...plugin_finetune_defaults,
+                    ...plugin_decorate_defaults,
+                    locale: {
+                        ...locale_en_gb,
+                        ...plugin_crop_locale_en_gb,
+                        ...plugin_finetune_locale_en_gb,
+                        ...plugin_filter_locale_en_gb,
+                        ...plugin_decorate_locale_en_gb,
+                        ...component_shape_editor_locale_en_gb,
+                    },
+                });
+
+                editor.on('load', (res) => console.log('modal result', res));
+
+                editor.on('process', (res) =>
+                    document
+                        .querySelector('.modal-result')
+                        .setAttribute('src', URL.createObjectURL(res.dest))
+                );
+            });
+
+            // overlay
+            {
+                let editor;
+                let imageState;
+
+                document
+                    .querySelector('.overlay-button[data-action="open"]')
+                    .addEventListener('click', () => {
+                        // hide result and show the editor
+                        document.querySelector('.overlay-result').style.display = 'none';
+                        document.querySelector('.overlay-editor').style.display = '';
+                        document.querySelector('.overlay-button[data-action=open]').style.display =
+                            'none';
+                        document.querySelector('.overlay-button[data-action=close]').style.display =
+                            '';
+
+                        // append overlay editor
+                        editor = overlayEditor('.overlay-editor', {
+                            src: './image.jpeg',
+                            imageReader: createDefaultImageReader(),
+                            imageWriter: createDefaultImageWriter(),
+
+                            // limit utils
+                            utils: ['crop'],
+
+                            // set locale to en_gb (we don't load the finetune and filter locale because those aren't available when in overlay mode)
+                            locale: {
+                                ...locale_en_gb,
+                                ...plugin_crop_locale_en_gb,
+                            },
+
+                            // current image state
+                            imageState: imageState,
+                        });
+
+                        editor.on('process', (res) => {
+                            // new image state, so we can re-edit with previous state
+                            imageState = res.imageState;
+
+                            // show the edit result
+                            document
+                                .querySelector('.overlay-result')
+                                .setAttribute('src', URL.createObjectURL(res.dest));
+                            document.querySelector('.overlay-result').style.display = '';
+
+                            // remove the editor
+                            editor.destroy();
+                            editor = undefined;
+                            document.querySelector('.overlay-editor').style.display = 'none';
+                        });
+                    });
+
+                document
+                    .querySelector('.overlay-button[data-action="close"]')
+                    .addEventListener('click', () => {
+                        // remove the editor if it's been defined
+                        if (!editor) return;
+                        editor.destroy();
+                        editor = undefined;
+
+                        // hide the editor and show the result
+                        document.querySelector('.overlay-result').style.display = '';
+                        document.querySelector('.overlay-editor').style.display = 'none';
+                        document.querySelector('.overlay-button[data-action=open]').style.display =
+                            '';
+                        document.querySelector('.overlay-button[data-action=close]').style.display =
+                            'none';
+                    });
+            }
+        </script>
+    </body>
+</html>
