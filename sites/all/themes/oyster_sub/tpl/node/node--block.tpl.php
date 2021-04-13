@@ -1,5 +1,9 @@
 <?php
+if(isset($content['field_layout']['#items'][0]['value'])){
 $layout = $content['field_layout']['#items'][0]['value'];
+}else{
+$layout = 1;  
+}
 ?>
 
 <?php if ($layout == 2) { ?>
