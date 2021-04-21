@@ -812,7 +812,9 @@ h3.center {
 }
 
 .view-daily-read-editable .views-field-body{
-  padding-bottom: 15px;
+  padding-bottom: 10px;
+  top: -5px;
+  position: relative;
 }
 
 @media(min-width: 992px){

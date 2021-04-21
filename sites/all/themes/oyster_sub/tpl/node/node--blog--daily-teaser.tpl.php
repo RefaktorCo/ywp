@@ -17,7 +17,7 @@ $node_link = drupal_get_path_alias('node/' . $node->nid);
     <div class="daily-teaser--content">
 	    
 	    <h2 class="daily-teaser--content--title"><?php print $title; ?></h2>
-      <div class="daily-teaser--content--author">by <a class="daily-teaser--content--author--link" href="<?php print $user_link; ?>"><?php print $user->name; ?></a>
+      <div class="daily-teaser--content--author">By <a class="daily-teaser--content--author--link" href="<?php print $user_link; ?>"><?php print $user->name; ?></a>
       </div>
       <div class="daily-teaser--content--more">
         
