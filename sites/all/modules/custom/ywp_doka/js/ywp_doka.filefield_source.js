@@ -30,7 +30,6 @@
         const $select = $this.find('.filefield-source-doka-select');
         const $file = $this.find('.filefield-source-doka-file');
         const $filename = $this.find('.filefield-source-doka-filename');
-        const $contents = $this.find('.filefield-source-doka-contents');
         const $submit = $this.find('.filefield-source-doka-submit');
 
         // Open file browser on "Select" button clicks.
@@ -68,24 +67,37 @@
             // Do the stuff when image is ready.
             editor.on('process', function (res) {
               const file = res.dest;
-              const reader = new FileReader();
 
-              // Set file name.
-              $filename.val(file.name);
+              // Change the "Select file" button appearance.
+              $select.prop('disabled', true);
+              $select.val('Uploading...');
 
-              // Read and set file contents.
-              reader.readAsDataURL(file);
-              reader.onload = function () {
-                $contents.val(reader.result);
+              // Upload the file to the server immediately.
+              const formData = new FormData();
+              formData.append('name', file.name);
+              formData.append('file', file);
+              fetch('/ywp-doka-handle-uploads', {
+                method: 'POST',
+                body: formData
+              }).then(response => {
+                return response.json()
+              }).then(json => {
+                // Now set the returned file path in the "filename" field and
+                // submit the widget.
+                if (json && json.path) {
+                  // Set file name.
+                  $filename.val(json.path);
 
-                // Upload the form automatically when file contents is set.
-                $submit.val('Uploading...');
-                $submit.mousedown();
+                  // Hide "Select" button as it's not needed anymore.
+                  $select.hide();
 
-                // Change the "Select file" button appearance.
-                $select.prop('disabled', true);
-                $select.hide();
-              };
+                  // Do submit the widget by pressing the button.
+                  $submit.val('Uploading...');
+                  $submit.mousedown();
+                }
+              }).catch(error => {
+                console.error(error);
+              });
             });
           }
         });

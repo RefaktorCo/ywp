@@ -5,6 +5,111 @@
  */
 
 /**
+ * Implements hook_menu().
+ *
+ * @noinspection PhpUnused
+ */
+function ywp_doka_menu() {
+  $items['ywp-doka-handle-uploads'] = array(
+    'title' => 'Doka uploads',
+    'page callback' => 'ywp_doka_handle_uploads',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array('access content'),
+  );
+  return $items;
+}
+
+/**
+ * Callback that handles and saves uploaded files.
+ */
+function ywp_doka_handle_uploads() {
+  global $user;
+
+  // Check that the destination is writable.
+  $temp_directory = 'temporary://';
+  if (!file_prepare_directory($temp_directory)) {
+    watchdog('file', 'The directory %directory is not writable, because it does not have the correct permissions set.', array('%directory' => drupal_realpath($temp_directory)));
+    _ywp_doka_send_error('Temporary directory is not writable.');
+  }
+
+  // Try to make sure this is private via htaccess.
+  file_create_htaccess($temp_directory);
+
+  // Create a directory with unique name to place a file into.
+  $temp_directory .= 'doka_' . $user->uid . '_' . REQUEST_TIME . '/';
+  if (!file_prepare_directory($temp_directory, FILE_CREATE_DIRECTORY)) {
+    watchdog('file', 'The directory %directory is not writable, because it does not have the correct permissions set.', array('%directory' => drupal_realpath($temp_directory)));
+    _ywp_doka_send_error('Temporary directory is not writable.');
+  }
+
+  // Get the filename.
+  $file_name = isset($_REQUEST['name']) ? $_REQUEST['name'] : '';
+  if (!$file_name) {
+    _ywp_doka_send_error('Filename is not specified.');
+  }
+
+  // Look for the content type header.
+  if (isset($_SERVER["CONTENT_TYPE"])) {
+    $content_type = $_SERVER["CONTENT_TYPE"];
+  }
+  elseif (isset($_SERVER["HTTP_CONTENT_TYPE"])) {
+    $content_type = $_SERVER["HTTP_CONTENT_TYPE"];
+  }
+  else {
+    $content_type = '';
+  }
+
+  // Is this a multipart upload?.
+  if (strpos($content_type, 'multipart') !== FALSE) {
+    if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
+      // Open temp file.
+      if ($out = fopen($temp_directory . ''. $file_name, 'ab')) {
+        // Read binary input stream and append it to temp file.
+        if ($in = fopen($_FILES['file']['tmp_name'], 'rb')) {
+          while ($buff = fread($in, 4096)) {
+            fwrite($out, $buff);
+          }
+          fclose($in);
+        }
+        else {
+          _ywp_doka_send_error('Failed to open input stream.');
+        }
+
+        // Save file metadata as we need its path to be returned.
+        $meta_data = stream_get_meta_data($out);
+
+        // Close the files afterwards.
+        fclose($out);
+        drupal_unlink($_FILES['file']['tmp_name']);
+
+        // Return file path.
+        $path = drupal_realpath($meta_data['uri']);
+        die(drupal_json_encode(['path' => $path]));
+      }
+      else {
+        _ywp_doka_send_error('Failed to open output stream.');
+      }
+    }
+    else {
+      _ywp_doka_send_error('No file provided.');
+    }
+  }
+  else {
+    _ywp_doka_send_error('Incorrect content type.');
+  }
+}
+
+/**
+ * Sends an error to the client.
+ *
+ * @param string $error
+ *   The error to send.
+ */
+function _ywp_doka_send_error($error) {
+  die(drupal_json_encode(['error' => $error]));
+}
+
+/**
  * Implements hook_libraries_info().
  *
  * @noinspection PhpUnused
@@ -83,13 +188,6 @@ function ywp_doka_filefield_source_process($element, &$form_state, $form) {
     ),
   );
 
-  $element['filefield_doka']['contents'] = array(
-    '#type' => 'hidden',
-    '#attributes' => array(
-      'class' => array('filefield-source-doka-contents'),
-    ),
-  );
-
   $element['filefield_doka']['file'] = array(
     '#type' => 'file',
     '#attributes' => array(
@@ -127,12 +225,12 @@ function ywp_doka_filefield_source_process($element, &$form_state, $form) {
  * @noinspection PhpUnused
  */
 function ywp_doka_filefield_source_value($element, &$item) {
-  // Reuse filefield_source_clipboard_value() as it implements exactly the same
+  // Reuse filefield_source_attach_value() as it implements exactly the same
   // logic but with a different top-level key.
-  if (!empty($item['filefield_doka']['filename']) && !empty($item['filefield_doka']['contents'])) {
-    module_load_include('inc', 'filefield_sources', 'sources/clipboard');
-    $item['filefield_clipboard'] = $item['filefield_doka'];
-    filefield_source_clipboard_value($element, $item);
-    unset($item['filefield_clipboard']);
+  if (!empty($item['filefield_doka']['filename'])) {
+    module_load_include('inc', 'filefield_sources', 'sources/attach');
+    $item['filefield_attach'] = $item['filefield_doka'];
+    filefield_source_attach_value($element, $item);
+    unset($item['filefield_attach']);
   }
 }
