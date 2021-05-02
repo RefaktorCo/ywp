@@ -6,6 +6,8 @@
 
 /**
  * Implements hook_module_implements_alter().
+ *
+ * @noinspection PhpUnused
  */
 function ywp_doka_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'field_widget_info_alter' || $hook == 'form_alter') {
@@ -208,7 +210,7 @@ function ywp_doka_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
  *
  * @noinspection PhpUnused
  */
-function ywp_doka_filefield_source_process($element, &$form_state, $form) {
+function ywp_doka_filefield_source_process($element, $form_state, $form) {
   $module_path = drupal_get_path('module', 'ywp_doka');
 
   $instance = field_widget_instance($element, $form_state);
