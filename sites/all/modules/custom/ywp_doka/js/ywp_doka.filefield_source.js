@@ -5,7 +5,7 @@
 (function ($) {
 
   Drupal.behaviors.ywpDokaFilefieldSource = {
-    attach: function (context) {
+    attach: function (context, settings) {
       $('.filefield-source-doka', context).once('ywpDokaFilefieldSource', function () {
         const {
           // editor
@@ -51,6 +51,7 @@
               ...plugin_filter_defaults,
               ...plugin_finetune_defaults,
               ...plugin_decorate_defaults,
+              ...(settings['dokaSettings'] || {}),
               locale: {
                 ...locale_en_gb,
                 ...plugin_crop_locale_en_gb,

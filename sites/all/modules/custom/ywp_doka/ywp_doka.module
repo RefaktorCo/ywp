@@ -5,6 +5,17 @@
  */
 
 /**
+ * Implements hook_module_implements_alter().
+ */
+function ywp_doka_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'field_widget_info_alter' || $hook == 'form_alter') {
+    $group = $implementations['ywp_doka'];
+    unset($implementations['ywp_doka']);
+    $implementations['ywp_doka'] = $group;
+  }
+}
+
+/**
  * Implements hook_menu().
  *
  * @noinspection PhpUnused
@@ -143,7 +154,7 @@ function ywp_doka_filefield_sources_info() {
   $source = array();
   $source['doka'] = array(
     'name' => t('Doka image editor'),
-    'label' => t('Doka'),
+    'label' => t('Edit and upload'),
     'description' => t('Edit images before uploading using Doka editor.'),
     'process' => 'ywp_doka_filefield_source_process',
     'value' => 'ywp_doka_filefield_source_value',
@@ -153,18 +164,69 @@ function ywp_doka_filefield_sources_info() {
 }
 
 /**
+ * Implements hook_field_widget_info_alter().
+ *
+ * @noinspection PhpUnused
+ */
+function ywp_doka_field_widget_info_alter(&$info) {
+  if (isset($info['image_image'])) {
+    $info['image_image']['settings']['filefield_sources']['source_doka']['options'] = NULL;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for field edit form.
+ *
+ * @noinspection PhpUnusedParameterInspection
+ * @noinspection PhpUnused
+ */
+function ywp_doka_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
+  $instance = $form['#instance'];
+  if ($instance['widget']['type'] == 'image_image') {
+    $sources = &$form['instance']['widget']['settings']['filefield_sources'];
+    $settings = $instance['widget']['settings']['filefield_sources']['source_doka'];
+
+    $sources['source_doka'] = array(
+      '#title' => t('Doka image editor settings'),
+      '#type' => 'fieldset',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+//      '#element_validate' => array('_filefield_source_attach_file_path_validate'),
+      '#weight' => 10,
+    );
+    $sources['source_doka']['options'] = array(
+      '#type' => 'textarea',
+      '#title' => t('Doka options'),
+      '#default_value' => $settings['options'],
+      '#description' => t('The JSON of Doka options object.'),
+    );
+  }
+}
+
+/**
  * A #process callback to extend the filefield_widget element type.
  *
  * @noinspection PhpUnused
- * @noinspection PhpUnusedParameterInspection
  */
 function ywp_doka_filefield_source_process($element, &$form_state, $form) {
   $module_path = drupal_get_path('module', 'ywp_doka');
+
+  $instance = field_widget_instance($element, $form_state);
+  $settings = $instance['widget']['settings']['filefield_sources']['source_doka'];
+  $options = isset($settings['options']) ? drupal_json_decode($settings['options']) : NULL;
 
   // Attach required library and a custom JS handler.
   $element['#attached']['libraries_load'][] = array('doka');
   $element['#attached']['js'][] = $module_path . '/js/ywp_doka.init.js';
   $element['#attached']['js'][] = $module_path . '/js/ywp_doka.filefield_source.js';
+
+  // Add Doka options, if any.
+  if ($options) {
+    $element['#attached']['js'][] = array(
+      'data' => array('dokaSettings' => $options),
+      'type' => 'setting',
+    );
+  }
 
   $element['filefield_doka'] = array(
     '#weight' => 90,
