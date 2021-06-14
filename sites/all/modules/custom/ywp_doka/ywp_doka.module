@@ -11,9 +11,11 @@
  */
 function ywp_doka_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'field_widget_info_alter' || $hook == 'form_alter') {
-    $group = $implementations['ywp_doka'];
-    unset($implementations['ywp_doka']);
-    $implementations['ywp_doka'] = $group;
+    if (isset($implementations['ywp_doka'])) {
+      $group = $implementations['ywp_doka'];
+      unset($implementations['ywp_doka']);
+      $implementations['ywp_doka'] = $group;
+    }
   }
 }
 
