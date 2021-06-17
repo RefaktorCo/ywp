@@ -108,23 +108,13 @@ if ($ywp_page_layout == 'media_right') {
         <?php print render($content['field_quote']); ?>
         <?php print render($content['ywp_text']); ?>
         <div class="blog-extra">
-          <div>
-            <a href="#" class="comments-toggle d-none d-md-inline-block">
-              <i class="fas fa-comment-dots"></i>
-            </a>
-          </div>
+          
         </div>
       </div>
     </div>
     <?php else: ?>
-      <a href="#" class="comments-toggle d-none d-md-block">
-        <i class="fas fa-comment-dots"></i>
-      </a>
+     
     <?php endif; ?>
-    <div class="<?php print $comments_class; ?>">
-      <?php print render($content['ywp_comments']); ?>
-      <h3>Leave a comment</h3>
-      <?php print render($content['ywp_comment_form']); ?>
-    </div>
+    
   </div>
 </article>
