@@ -65,7 +65,7 @@
 <div class="panel-region-after_content"></div>
 <div id="content-events-connections" class="panel-row">
   <div class="row ">
-    <h2 class="pane-title">Events and Connections</h2>
+    <h2 class="pane-title">Events and News</h2>
   </div>
   <div class="row view-content">
     <div class="span3">
