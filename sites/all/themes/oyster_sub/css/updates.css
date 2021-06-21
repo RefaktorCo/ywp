@@ -442,7 +442,8 @@ h2.pane-title a{
 #page-content h3.pane-title,
 #page-content h3.pane-title a{
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
+  font-weight: 400;
 }
 
 #page-content .pane-title a
@@ -802,8 +803,8 @@ footer{
 
 h3.center {
   text-align: center;
-	font-size: 18px;
-	font-weight: 500;
+	font-size: 22px;
+	font-weight: 400;
 	color: #444444;
 }
 
