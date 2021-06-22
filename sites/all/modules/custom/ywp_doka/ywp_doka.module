@@ -217,7 +217,7 @@ function ywp_doka_filefield_source_process($element, $form_state, $form) {
 
   $instance = field_widget_instance($element, $form_state);
   $settings = $instance['widget']['settings']['filefield_sources']['source_doka'];
-  $options = isset($settings['options']) ? drupal_json_decode($settings['options']) : NULL;
+  $options = isset($settings['options']) ? $settings['options'] : NULL;
 
   // Attach required library and a custom JS handler.
   $element['#attached']['libraries_load'][] = array('doka');

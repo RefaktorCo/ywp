@@ -51,7 +51,7 @@
               ...plugin_filter_defaults,
               ...plugin_finetune_defaults,
               ...plugin_decorate_defaults,
-              ...(settings['dokaSettings'] || {}),
+              ...(JSON.parse(settings['dokaSettings']) || {}),
               locale: {
                 ...locale_en_gb,
                 ...plugin_crop_locale_en_gb,
