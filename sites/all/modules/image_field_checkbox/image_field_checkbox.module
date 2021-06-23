@@ -497,6 +497,10 @@ function gallery_images_block_view(){
   $result = db_query('SELECT bundle, entity_id, checkbox_value FROM {field_image_field_checkbox} WHERE checkbox_value = 1');
   foreach ($result as $record) {
     $image = file_load($record->bundle);
+    
+        $options = array('absolute' => TRUE);
+        $nid = $record->entity_id; // Node ID
+        $url = url('node/' . $nid, $options);
     $image_styled= theme('image_style',
       array(
         'style_name' => 'gallery',
@@ -505,7 +509,7 @@ function gallery_images_block_view(){
       )
     );
 
-    $content .="<div class='gallery-item'>$image_styled</div>";
+    $content .="<div class='gallery-item'><a href='$url'>$image_styled</a></div>";
   }
 
   $content .= "</div></div>";
