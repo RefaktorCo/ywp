@@ -32,7 +32,7 @@
                           autoWidth: true,
                           autoplayTimeout: 5000,
                           autoplay: true,
-                          loop: false,
+                          loop: true,
                           items: 4,
                           responsive: {
                             0: {
