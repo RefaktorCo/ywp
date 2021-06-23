@@ -31,6 +31,7 @@
                           dots: false,
                           autoWidth: true,
                           autoplayTimeout: 5000,
+                          autoplay: true,
                           loop: false,
                           items: 4,
                           responsive: {
