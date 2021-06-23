@@ -30,6 +30,7 @@
                           nav: true,
                           dots: false,
                           autoWidth: true,
+                          autoplayTimeout: 5000,
                           loop: false,
                           items: 4,
                           responsive: {
