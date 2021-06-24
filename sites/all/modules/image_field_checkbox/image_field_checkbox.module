@@ -161,10 +161,13 @@ function image_field_checkbox_field_widget_form_alter(&$element, &$form_state, $
   $instance = $context['instance'];
   $settings = $instance['settings'];
   $field = $context['field'];
+  global $user;
   if (isset($settings['image_field_checkbox']['enabled']) && $field['type'] == 'image' && $settings['image_field_checkbox']['enabled']) {
     foreach (element_children($element) as $delta) {
       // Add all extra functionality provided by the image widget.
+      if (in_array('administrator', $user->roles)) {
       $element[$delta]['#process'][] = 'image_field_checkbox_widget_process';
+    }
    }
   }
 }
