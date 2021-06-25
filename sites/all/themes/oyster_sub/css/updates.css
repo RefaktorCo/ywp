@@ -242,6 +242,7 @@ h1, h2, h3, h4, h5, h6, h1 span, h2 span, h3 span, h4 span, h5 span, h6 span, h1
 
 .main_header nav ul.menu{
   margin-right: 0;
+  margin-top: 10px;
 }
 .main_header nav ul.menu>li{
   margin: 0 10px;
