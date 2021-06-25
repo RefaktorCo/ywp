@@ -21,7 +21,7 @@
                           merge: true,
                           nav: true,
                           dots: false,
-                          autoplay: false,
+                          autoplay: true,
                           autoplayTimeout: 5000,
                           loop: true,
 //                          responsive: {
