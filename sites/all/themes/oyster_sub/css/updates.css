@@ -862,17 +862,24 @@ h3.center {
 }
 
 .view-daily-read-editable .views-field-body{
-  padding-bottom: 15px;
+  padding-bottom: 35px;
 }
 
 @media(min-width: 992px){
   .view-daily-read-editable .views-row{
+    position:relative;
     -moz-column-count: 2;
     -moz-column-gap: 30px;
     -webkit-column-count: 2;
     -webkit-column-gap: 30px;
     column-count: 2;
     column-gap: 30px;
+  }
+  .view-daily-read-editable .views-row .views-field-nothing-1{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
   }
 }
 @media(min-width: 992px){
