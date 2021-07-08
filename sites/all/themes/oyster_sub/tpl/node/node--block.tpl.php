@@ -43,7 +43,12 @@ $layout = 1;
         <?php endif; ?>
       <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
         </a>
+      
     <?php endif; ?>
+      <div class="credit-text">
+        <?php print render($content['field_title_of_the_art']); ?> by <?php print render($content['field_credit_user']); ?>
+        
+      </div>
     </div>
     <?php if (in_array('administrator', $user->roles)) : ?>
       <a href="/node/<?php print $node->nid; ?>/edit" target='_blank'>[Edit]</a>

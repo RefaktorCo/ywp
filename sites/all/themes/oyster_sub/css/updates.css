@@ -921,3 +921,13 @@ h3.center {
 .page-blog .blogpost_title a {
   font-size: 20px;
 }
+
+.credit-text{
+  text-align: right;
+}
+.span6 .credit-text{
+  color:#fff;
+}
+.credit-text a:hover{
+  color:#40b7b8 !important;
+}
