@@ -1,4 +1,7 @@
 <?php
+	global $base_url, $user;	
+	$author = user_load($node->uid);
+  
 if(isset($content['field_layout']['#items'][0]['value'])){
 $layout = $content['field_layout']['#items'][0]['value'];
 }else{
@@ -46,7 +49,7 @@ $layout = 1;
       
     <?php endif; ?>
       <div class="credit-text">
-        <?php print render($content['field_title_of_the_art']); ?> by <?php print render($content['field_credit_user']); ?>
+        <?php print render($content['field_title_of_the_art']); ?> by <a href="<?php print $base_url; ?>/user/<?php print $author->uid; ?>"><?php print $author->field_firstname['und'][0]['value']; ?> <?php print $author->field_last_name['und'][0]['value']; ?></a>
         
       </div>
     </div>
