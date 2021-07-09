@@ -49,8 +49,7 @@ $layout = 1;
       
     <?php endif; ?>
       <div class="credit-text">
-        <?php print render($content['field_title_of_the_art']); ?> by <a href="<?php print $base_url; ?>/user/<?php print $author->uid; ?>"><?php print $author->field_firstname['und'][0]['value']; ?> <?php print $author->field_last_name['und'][0]['value']; ?></a>
-        
+        <?php print render($content['field_title_of_the_art']); ?>        
       </div>
     </div>
     <?php if (in_array('administrator', $user->roles)) : ?>
