@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "version": "8.1.1",
+  "name": "svelte-pintura",
+  "browser": "index.js",
+  "main": "index.js",
+  "license": "https://pqina.nl/pintura/license"
+}

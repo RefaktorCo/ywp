@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Image Input</title>
+        <link rel="stylesheet" href="./pintura-input/pintura-input.css" />
+        <style>
+            html {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+                    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+                font-size: 16px;
+                line-height: 1.5;
+            }
+
+            body {
+                padding: 1em;
+            }
+
+            img {
+                max-width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Image Input</h1>
+
+        <pintura-input
+            name="my_field"
+            store="/upload"
+            input-store-success="{filename} uploaded successfully."
+        >
+        </pintura-input>
+
+        <h1>Image Input with template</h1>
+
+        <style>
+            /* The empty state grey box */
+            .pintura-input-styled [data-empty] {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #eee;
+            }
+
+            /* The "drag n drop" text */
+            .pintura-input-styled [data-empty] p {
+                user-select: none;
+                margin: 1em;
+                text-align: center;
+                color: #333;
+            }
+
+            /* To make the browse button blend in */
+            .pintura-input-styled [data-browse] {
+                border: none;
+                background: none;
+                font: inherit;
+                font-size: inherit;
+                color: inherit;
+                padding: 0;
+                margin: 0;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            /* To make each state equal size and round the corners */
+            .pintura-input-styled [data-empty],
+            .pintura-input-styled [data-load] img,
+            .pintura-input-styled [data-process] img {
+                width: 300px;
+                height: 225px;
+                border-radius: 1rem;
+                object-fit: cover;
+            }
+        </style>
+
+        <pintura-input
+            class="pintura-input-styled"
+            src="image.jpeg"
+            name="my_field"
+            image-crop-aspect-ratio="4/3"
+            store="/upload"
+        >
+            <template>
+                <div data-empty data-drop>
+                    <p>
+                        Drag &amp; Drop your image here or
+                        <button type="button" data-browse>Browse</button>
+                    </p>
+                </div>
+                <div data-load>
+                    <img src="image.jpeg" width="300" />
+                    <div>
+                        <button type="button" data-remove>remove</button>
+                        <button type="button" data-edit>edit</button>
+                    </div>
+                </div>
+                <output data-process>
+                    <img src="{url}" width="300" />
+                    <p>"{filename}" uploaded successfully</p>
+                    <div>
+                        <button type="button" data-remove>remove</button>
+                        <button type="button" data-edit>edit</button>
+                    </div>
+                </output>
+            </template>
+        </pintura-input>
+
+        <script src="/pintura-input/pintura-input.js"></script>
+    </body>
+</html>

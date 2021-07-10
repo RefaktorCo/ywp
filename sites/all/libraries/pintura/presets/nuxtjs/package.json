@@ -1,0 +1,22 @@
+{
+    "name": "nuxtjs",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "nuxt",
+        "build": "nuxt build",
+        "start": "nuxt start",
+        "generate": "nuxt generate"
+    },
+    "dependencies": {
+        "core-js": "^3.9.1",
+        "filepond": "^4.27.0",
+        "filepond-plugin-file-poster": "^2.4.2",
+        "filepond-plugin-file-validate-type": "^1.2.6",
+        "filepond-plugin-image-editor": "file:local_modules/filepond-plugin-image-editor",
+        "nuxt": "^2.15.3",
+        "pintura": "file:local_modules/pintura",
+        "vue-filepond": "^6.0.3",
+        "vue-pintura": "file:local_modules/vue-pintura"
+    }
+}

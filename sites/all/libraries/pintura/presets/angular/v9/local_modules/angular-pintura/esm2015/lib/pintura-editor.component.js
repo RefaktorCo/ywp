@@ -1,0 +1,16 @@
+import { Component } from '@angular/core';
+// @ts-ignore
+import { appendEditor } from 'pintura';
+import { PinturaEditorAbstractComponent } from './pintura-editor-abstract.component';
+export class PinturaEditorComponent extends PinturaEditorAbstractComponent {
+    initEditor(element, props) {
+        return appendEditor(element, props);
+    }
+}
+PinturaEditorComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'pintura-editor',
+                template: ` <ng-content></ng-content> `
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicGludHVyYS1lZGl0b3IuY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6Ii4uLy4uLy4uLy4uL3NyYy9hbmd1bGFyLXBpbnR1cmEvdjkvcHJvamVjdHMvYW5ndWxhci1waW50dXJhL3NyYy8iLCJzb3VyY2VzIjpbImxpYi9waW50dXJhLWVkaXRvci5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsT0FBTyxFQUFFLFNBQVMsRUFBVSxNQUFNLGVBQWUsQ0FBQztBQUNsRCxhQUFhO0FBQ2IsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLFNBQVMsQ0FBQztBQUN2QyxPQUFPLEVBQUUsOEJBQThCLEVBQUUsTUFBTSxxQ0FBcUMsQ0FBQztBQU9yRixNQUFNLE9BQU8sc0JBQXVCLFNBQVEsOEJBQThCO0lBQ3RFLFVBQVUsQ0FBQyxPQUFvQixFQUFFLEtBQVU7UUFDdkMsT0FBTyxZQUFZLENBQUMsT0FBTyxFQUFFLEtBQUssQ0FBQyxDQUFDO0lBQ3hDLENBQUM7OztZQVJKLFNBQVMsU0FBQztnQkFDUCxRQUFRLEVBQUUsZ0JBQWdCO2dCQUMxQixRQUFRLEVBQUUsNkJBQTZCO2FBRTFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29tcG9uZW50LCBPbkluaXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcbi8vIEB0cy1pZ25vcmVcbmltcG9ydCB7IGFwcGVuZEVkaXRvciB9IGZyb20gJ3BpbnR1cmEnO1xuaW1wb3J0IHsgUGludHVyYUVkaXRvckFic3RyYWN0Q29tcG9uZW50IH0gZnJvbSAnLi9waW50dXJhLWVkaXRvci1hYnN0cmFjdC5jb21wb25lbnQnO1xuXG5AQ29tcG9uZW50KHtcbiAgICBzZWxlY3RvcjogJ3BpbnR1cmEtZWRpdG9yJyxcbiAgICB0ZW1wbGF0ZTogYCA8bmctY29udGVudD48L25nLWNvbnRlbnQ+IGAsXG4gICAgc3R5bGVzOiBbXSxcbn0pXG5leHBvcnQgY2xhc3MgUGludHVyYUVkaXRvckNvbXBvbmVudCBleHRlbmRzIFBpbnR1cmFFZGl0b3JBYnN0cmFjdENvbXBvbmVudCBpbXBsZW1lbnRzIE9uSW5pdCB7XG4gICAgaW5pdEVkaXRvcihlbGVtZW50OiBIVE1MRWxlbWVudCwgcHJvcHM6IGFueSkge1xuICAgICAgICByZXR1cm4gYXBwZW5kRWRpdG9yKGVsZW1lbnQsIHByb3BzKTtcbiAgICB9XG59XG4iXX0=

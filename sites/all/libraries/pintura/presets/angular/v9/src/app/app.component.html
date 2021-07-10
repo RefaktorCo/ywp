@@ -1,0 +1,72 @@
+<style>
+    :host {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+            sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-size: 14px;
+        color: #333;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        padding: 2em;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    pintura-editor {
+        box-shadow: 0 0 0 1px #eee;
+    }
+</style>
+
+<div>
+    <h1>Pintura Image Editor</h1>
+
+    <h2>Inline</h2>
+
+    <div style="height: 70vh">
+        <pintura-editor
+            [src]="inlineSrc"
+            [options]="editorOptions"
+            (load)="handleInlineLoad($event)"
+            (process)="handleInlineProcess($event)"
+        ></pintura-editor>
+    </div>
+
+    <p><img *ngIf="inlineResult" [src]="inlineResult" alt="" /></p>
+
+    <h2>Modal</h2>
+
+    <button (click)="modalVisible = true">Show Modal</button>
+
+    <pintura-editor-modal
+        *ngIf="modalVisible"
+        [src]="modalSrc"
+        [options]="editorOptions"
+        (hide)="modalVisible = false"
+        (load)="handleModalLoad($event)"
+        (process)="handleModalProcess($event)"
+    ></pintura-editor-modal>
+
+    <p><img *ngIf="modalResult" [src]="modalResult" alt="" /></p>
+
+    <h2>Overlay</h2>
+
+    <p>
+        <button *ngIf="!overlayVisible" (click)="overlayVisible = true">Edit image</button>
+        <button *ngIf="overlayVisible" (click)="overlayVisible = false">Close editor</button>
+    </p>
+
+    <p *ngIf="!overlayVisible">
+        <img [src]="overlayResult || overlaySrc" width="512" height="256" alt="" />
+    </p>
+
+    <div *ngIf="overlayVisible" style="width: 512px; height: 256px">
+        <pintura-editor-overlay
+            [src]="overlaySrc"
+            [options]="overlayOptions"
+            (load)="handleOverlayLoad($event)"
+            (process)="handleOverlayProcess($event)"
+        ></pintura-editor-overlay>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf8" />
+        <meta name="viewport" content="width=device-width" />
+
+        <title>Uppy</title>
+
+        <link rel="icon" href="favicon.ico" />
+        <link
+            href="https://transloadit.edgly.net/releases/uppy/v1.8.0/uppy.min.css"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="./pintura/pintura.css" />
+    </head>
+    <body>
+        <div id="drag-drop-area"></div>
+
+        <script src="https://transloadit.edgly.net/releases/uppy/v1.8.0/uppy.min.js"></script>
+        <script src="./useEditorWithUppy-iife.js"></script>
+
+        <script type="module">
+            import {
+                // editor
+                openEditor,
+                createDefaultImageReader,
+                createDefaultImageWriter,
+                locale_en_gb,
+
+                // plugins
+                setPlugins,
+                plugin_crop,
+                plugin_crop_locale_en_gb,
+                plugin_filter,
+                plugin_filter_defaults,
+                plugin_filter_locale_en_gb,
+                plugin_finetune,
+                plugin_finetune_defaults,
+                plugin_finetune_locale_en_gb,
+                plugin_annotate,
+                plugin_annotate_locale_en_gb,
+                markup_editor_defaults,
+                markup_editor_locale_en_gb,
+            } from './pintura/pintura.js';
+
+            setPlugins(plugin_crop, plugin_filter, plugin_finetune, plugin_annotate);
+
+            const uppy = Uppy.Core({
+                onBeforeFileAdded: useEditorWithUppy(
+                    openEditor,
+                    {
+                        imageReader: createDefaultImageReader(),
+                        imageWriter: createDefaultImageWriter(),
+                        ...plugin_filter_defaults,
+                        ...plugin_finetune_defaults,
+                        ...markup_editor_defaults,
+                        locale: {
+                            ...locale_en_gb,
+                            ...plugin_crop_locale_en_gb,
+                            ...plugin_filter_locale_en_gb,
+                            ...plugin_finetune_locale_en_gb,
+                            ...plugin_annotate_locale_en_gb,
+                            ...markup_editor_locale_en_gb,
+                        },
+                    },
+                    () => uppy.addFile
+                ),
+            })
+                .use(Uppy.Dashboard, { inline: true, target: '#drag-drop-area' })
+                .use(Uppy.Tus, { endpoint: 'https://master.tus.io/files/' });
+
+            uppy.on('complete', (result) => {
+                console.log(`Upload complete! We’ve uploaded these files: ${result.successful}`);
+            });
+        </script>
+    </body>
+</html>

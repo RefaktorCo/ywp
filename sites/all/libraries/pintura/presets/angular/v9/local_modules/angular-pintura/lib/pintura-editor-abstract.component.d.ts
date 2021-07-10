@@ -1,0 +1,32 @@
+import { EventEmitter, ElementRef, NgZone, OnInit } from '@angular/core';
+import { ImageSource, PinturaEditorOptions, PinturaEditor } from 'pintura';
+export declare class PinturaEditorAbstractComponent implements OnInit {
+    protected element: ElementRef;
+    protected editor: PinturaEditor;
+    protected zone: NgZone;
+    private unsubs;
+    src: ImageSource;
+    options: PinturaEditorOptions;
+    loadstart: EventEmitter<any>;
+    loaderror: EventEmitter<any>;
+    loadprogress: EventEmitter<any>;
+    load: EventEmitter<any>;
+    processstart: EventEmitter<any>;
+    processerror: EventEmitter<any>;
+    processprogress: EventEmitter<any>;
+    process: EventEmitter<any>;
+    undo: EventEmitter<any>;
+    redo: EventEmitter<any>;
+    revert: EventEmitter<any>;
+    destroy: EventEmitter<any>;
+    show: EventEmitter<any>;
+    hide: EventEmitter<any>;
+    close: EventEmitter<any>;
+    constructor(element: ElementRef, zone: NgZone);
+    private routeEvent;
+    protected initEditor(element: HTMLElement, props: any): PinturaEditor;
+    ngAfterViewInit(): void;
+    ngOnChanges(): void;
+    ngOnDestroy(): void;
+    ngOnInit(): void;
+}
