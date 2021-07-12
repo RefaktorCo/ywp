@@ -45,6 +45,25 @@
               imageWriter: createDefaultImageWriter(),
               ...plugin_filter_defaults,
               ...plugin_finetune_defaults,
+              cropSelectPresetOptions: [
+                [
+                  'Crop',
+                  [
+                    [undefined, 'Custom'],
+                    [1, 'Square'],
+                    [4 / 3, 'Landscape'],
+                    [3 / 4, 'Portrait'],
+                  ],
+                ],
+                [
+                  'Size',
+                  [
+                    [[180, 180], 'Profile Picture'],
+                    [[1200, 600], 'Header Image'],
+                    [[800, 400], 'Timeline Photo'],
+                  ],
+                ],
+              ],
               ...(JSON.parse(settings['pinturaSettings'] || '{}')),
               locale: {
                 ...locale_en_gb,
