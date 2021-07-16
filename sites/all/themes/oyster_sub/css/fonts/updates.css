@@ -242,7 +242,6 @@ h1, h2, h3, h4, h5, h6, h1 span, h2 span, h3 span, h4 span, h5 span, h6 span, h1
 
 .main_header nav ul.menu{
   margin-right: 0;
-  margin-top: 10px;
 }
 .main_header nav ul.menu>li{
   margin: 0 10px;
@@ -474,7 +473,7 @@ h2.pane-title a{
   display: inline-block;
 }
 #page-content .panel-row{
-  padding:0 0 60px 0;
+  padding:0 0 75px 0;
 }
 #page-content h3.pane-title,
 #page-content h3.pane-title a{
@@ -863,24 +862,17 @@ h3.center {
 }
 
 .view-daily-read-editable .views-field-body{
-  padding-bottom: 35px;
+  padding-bottom: 15px;
 }
 
 @media(min-width: 992px){
   .view-daily-read-editable .views-row{
-    position:relative;
     -moz-column-count: 2;
     -moz-column-gap: 30px;
     -webkit-column-count: 2;
     -webkit-column-gap: 30px;
     column-count: 2;
     column-gap: 30px;
-  }
-  .view-daily-read-editable .views-row .views-field-nothing-1{
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
   }
 }
 @media(min-width: 992px){
@@ -921,25 +913,4 @@ h3.center {
 
 .page-blog .blogpost_title a {
   font-size: 20px;
-}
-
-.credit-text{
-  text-align: right;
-}
-.span6 .credit-text{
-  color:#fff;
-}
-.credit-text a:hover{
-  color:#40b7b8 !important;
-}
-
-.banner-block{
-  margin-bottom: 30px;
-}
-.banner-block .edit-banner-link{
-  display: flex;
-  justify-content: flex-end; 
-}
-.banner-block img{
-  min-width: 100%;
 }

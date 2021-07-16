@@ -212,7 +212,43 @@ $layout = 1;
       <a href="/node/<?php print $node->nid; ?>/edit" target='_blank'>[Edit]</a>
   <?php endif; ?>
   </div>
+
+
+ <?php } else if ($layout == 8) { ?>
+  <div class="node--block banner-block">
+ <?php if (in_array('administrator', $user->roles)) : ?>
+    <div class="edit-banner-link">
+      <a href="/node/<?php print $node->nid; ?>/edit" target='_blank'>[Edit]</a>
+      </div>
+  <?php endif; ?>
+      <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      <a href="<?php print render($content['field_link']['#items'][0]['url']); ?>" target="_blank">
+      <?php endif; ?>
+      <?php if (isset($content['field_image'])): ?>
+
+        <?php
+        if (isset($node->field_image['und'][0]['filename'])) {
+
+          $image = file_load($node->field_image['und'][0]['fid']);
+          print (
+                  theme('image_style',
+                          array(
+                              'style_name' => '1000x303',
+                              'path' => $image->uri,
+                              'getsize' => FALSE
+                          )
+                  )
+          );
+        }
+        ?>
+    <?php endif; ?>
+    <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
+      </a>
+      <?php endif; ?>
+   
+  </div>
   <?php } else { ?>
+
   <div class="node--block">
 
       <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
