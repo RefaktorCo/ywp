@@ -245,7 +245,11 @@ $layout = 1;
     <?php if (isset($content['field_link']['#items'][0]['url'])): ?>
       </a>
       <?php endif; ?>
-   
+    <?php if($content['body']):?>
+      <div class="block-row--body">
+    <?php print render($content['body']); ?>
+    </div>
+    <?php endif; ?>
   </div>
   <?php } else { ?>
 
